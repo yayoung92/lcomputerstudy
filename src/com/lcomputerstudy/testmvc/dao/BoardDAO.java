@@ -21,7 +21,7 @@ public class BoardDAO {
 		}
 		return dao;
 	}
-	public List<Board> getBoards() {
+	public List<Board> getBoards() {	// github test
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
