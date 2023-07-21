@@ -23,11 +23,12 @@
 		width:200px;
 		text-align:center;
 	}
-<%--	a {
+	a {
 		text-decoration:none;
 		color:#000;
 		font-weight:700;
 	}
+	
 	ul {
 		width:600px;
 		height:50px;
@@ -42,7 +43,7 @@
 		text-align:center;
 		margin:0 5px;
 		border-radius:5px;
-	} --%>
+	} 
 </style>
 <body>
 	<h1>무엇이든 적어보자 y게시판y 찡긋 </h1>
@@ -65,6 +66,12 @@
 				<td>${board.b_date}</td>
 			</tr>
 		</c:forEach>
+
 	</table>
+	<div class='right-bos'>
+		<a href="board-edit.do?u_idx=${board.b_idx}" style="width:70%;font-weight:700;background-color:#818181;color:#fff;" >글쓰기</a>
+	</div>
+	
+	
 </body>
 </html>
