@@ -7,7 +7,7 @@ public class Board {
 	private String b_view;
 	private String b_writer;
 	private String b_date;
-	private int u_idx;
+//	private int u_idx;
 	
 	public int getB_idx() {
 		return b_idx;
@@ -45,12 +45,12 @@ public class Board {
 	public void setB_date(String b_date) {
 		this.b_date = b_date;
 	}
-	public int getU_idx() {
+/*	public int getU_idx() {
 		return u_idx;
 	}
 	public void setU_idx(int u_idx) {
 		this.u_idx = u_idx;
 	}
-
+*/
 	
 }

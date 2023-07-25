@@ -1,6 +1,7 @@
 package com.lcomputerstudy.testmvc.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -36,7 +37,9 @@ public class Controller extends HttpServlet {
 		String pw = null;
 		String idx = null;
 		User user = null;
+		Board board = null;
 		int uIdx = 0;
+		int bIdx = 0;
 		int usercount = 0;
 		int page = 1;
 		HttpSession session = null;
@@ -147,27 +150,60 @@ public class Controller extends HttpServlet {
 				
 			case "/board-b_list.do":
 				BoardService boardService = BoardService.getInstance();
-				List<Board> b_list = boardService.getBoards();
+				ArrayList<Board> blist = boardService.getBoards();
 
-				request.setAttribute("b_list", b_list);
+				request.setAttribute("b_list", blist);
 				view = "board/b_list";
 				break;
-		//	case "/user-insert.do":
-		//		view = "user/insert";
-		//		break;
-		//	case "/user-insert-process.do":
-		//		user = new User();
-		//		user.setU_id(request.getParameter("id"));
-		//		user.setU_pw(request.getParameter("password"));
-		//		user.setU_name(request.getParameter("name"));
-		//		user.setU_tel(request.getParameter("tel1") + "-" + request.getParameter("tel2") + "-" + request.getParameter("tel3"));
-		//		user.setU_age(request.getParameter("age"));
+			case "/board-b_insert.do":
+				view = "board/b_insert";
+				break;
+			case "/board-b_insert-process.do":
+				board = new Board();
+				board.setB_title(request.getParameter("title"));
+				board.setB_content(request.getParameter("content"));
+				board.setB_view(request.getParameter("view"));
+				board.setB_writer(request.getParameter("writer"));
+				board.setB_date(request.getParameter("date"));
 				
-		//		userService = UserService.getInstance();
-		//		userService.insertUser(user);
+				boardService = BoardService.getInstance();
+				boardService.insertBoard(board);
 						
-		//		view = "user/insert-result";
-		//		break;
+				view = "board/b_insert-result";
+				break;
+			case "/board-b_detail.do":
+				bIdx = Integer.parseInt(request.getParameter("b_idx"));
+				boardService = BoardService.getInstance();
+				board = boardService.detailBoard(bIdx);
+				
+				request.setAttribute("board", board);
+				boardService.boardViews(bIdx);  //클릭할수록 조회수 증가
+				
+				view = "board/b_detail";
+				break;
+			case "/board-b_edit.do": //게시글 수정 창 - 게시글정보 받아오기
+				bIdx = Integer.parseInt(request.getParameter("b_idx"));
+				boardService = BoardService.getInstance();
+				board = boardService.getBoard(bIdx);
+				request.setAttribute("board", board);
+				view = "board/b_edit";
+
+				break;
+			case "/board-b_edit-process.do":  //게시글 수정 값 보내기
+				board = new Board();
+				board.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
+				board.setB_title(request.getParameter("edit_b_title"));
+				board.setB_content(request.getParameter("edit_b_content"));
+			//	board.setB_view(request.getParameter("edit_view"));
+				board.setB_writer(request.getParameter("edit_b_writer"));
+				board.setB_date(request.getParameter("edit_b_date"));
+				
+				boardService = BoardService.getInstance();
+				boardService.editBoard(board);
+				
+				view = "board/b_edit-result";
+				break;
+			
 		}
 		
 		RequestDispatcher rd = request.getRequestDispatcher(view + ".jsp");

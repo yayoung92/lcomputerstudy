@@ -1,7 +1,6 @@
 package com.lcomputerstudy.testmvc.service;
 
-import java.util.List;
-
+import java.util.ArrayList;
 import com.lcomputerstudy.testmvc.dao.BoardDAO;
 import com.lcomputerstudy.testmvc.vo.Board;
 
@@ -19,11 +18,23 @@ public class BoardService {
 		}
 		return service;
 	}
-	public List<Board> getBoards() {
+	public ArrayList<Board> getBoards() {
 		return dao.getBoards();
 	}
 	public void insertBoard(Board board) {
 		dao.insertBoard(board);
+	}
+	public Board detailBoard(int bIdx) {
+		return dao.detailBoard(bIdx);
+	}
+	public void boardViews(int bIdx) {
+		dao.boardViews(bIdx);
+	}
+	public void editBoard(Board board) {
+		 dao.editBoard(board);
+	}
+	public Board getBoard(int bIdx) {
+		return dao.getBoard(bIdx);
 	}
 }
 
