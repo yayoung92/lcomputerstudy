@@ -49,15 +49,15 @@
 		border-radius:5px;
 	} 
 	.button-container {
-		text-align: right;
+		text-align: center;
 	}
 	.custom-button {
-		padding: 10px 20px;
+		padding: 10px 10px;
 		background-color: #007bff;
 		color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
+      	border: none;
+      	border-radius: 3px;
+      	cursor: pointer;
 	}
 	
 </style>
@@ -93,12 +93,6 @@
 				<td><a href="board-b_edit.do?b_idx=${board.b_idx }"><input type="button" value="수정"></a></td>
 			</tr>
 		</c:forEach>
-	 	<tr style="height:50px;">
-		<td style="border:none;colspan:6;">
-			<a href="board-b_insert.do" style="width:50%;font-weight:70;background-color:#818181;color:#fff;" >글 쓰기</a>
-		</td>
-		</tr> 
-
 	</table>
 	<%--	<input type="button" class="bin" name="bin" value="버튼" style="float:right;"> 
 		<a href="board-edit.do?u_idx=${board.b_idx}" style="width:70%;font-weight:700;background-color:#818181;color:#fff;colspan:5;float:right;" >글쓰기</a>  
@@ -106,8 +100,8 @@
 <a href="boardEdit.do?b_idx=${board.b_idx}"></a><input type='button' class='btn' name='btn' value='글 작성하기' >
 </div> --%>
 	<div class="button-container">
-    <button class="custom-button">글쓰기</button>
-  </div>
+	    <a class="custom-button" href="board-b_insert.do" role="button">글쓰기</a>
+	  </div>
 	
 </body>
 </html>

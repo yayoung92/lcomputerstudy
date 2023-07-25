@@ -151,7 +151,6 @@ public class BoardDAO {
     	}
 		return board;
 	}
-	
 	public void editBoard(Board board) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -176,6 +175,22 @@ public class BoardDAO {
 				e.printStackTrace();
 			}
 
+		}
+	}
+	public void deleteBoard(int bIdx) {
+		PreparedStatement pstmt = null;
+		Connection conn = null;
+		
+		try {
+			conn = DBConnection.getConnection();
+			String query = "delete from board where b_idx=?";
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, bIdx);
+			pstmt.executeUpdate();
+			
+			pstmt.close();
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 	}
 }

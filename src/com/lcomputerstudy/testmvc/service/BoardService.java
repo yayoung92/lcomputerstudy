@@ -36,6 +36,9 @@ public class BoardService {
 	public Board getBoard(int bIdx) {
 		return dao.getBoard(bIdx);
 	}
+	public void deleteBoard(int bIdx) {
+		dao.deleteBoard(bIdx);
+	}
 }
 
 

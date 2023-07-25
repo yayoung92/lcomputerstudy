@@ -194,7 +194,6 @@ public class Controller extends HttpServlet {
 				board.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
 				board.setB_title(request.getParameter("edit_b_title"));
 				board.setB_content(request.getParameter("edit_b_content"));
-			//	board.setB_view(request.getParameter("edit_view"));
 				board.setB_writer(request.getParameter("edit_b_writer"));
 				board.setB_date(request.getParameter("edit_b_date"));
 				
@@ -203,7 +202,14 @@ public class Controller extends HttpServlet {
 				
 				view = "board/b_edit-result";
 				break;
-			
+			case "/board-b_delete-process.do":
+				bIdx = Integer.parseInt(request.getParameter("b_idx"));
+				boardService = BoardService.getInstance();
+				boardService.deleteBoard(bIdx);
+				request.setAttribute("board", board);
+				
+				view = "board/b_delete";
+				break;
 		}
 		
 		RequestDispatcher rd = request.getRequestDispatcher(view + ".jsp");

@@ -5,10 +5,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title></title>
+<title>게시글 삭제</title>
 </head>
-
 <body>
-
+	<h1>삭제 완료</h1>
+	<a href="/lcomputerstudy/board-b_list.do">돌아가기</a>
 </body>
 </html>
