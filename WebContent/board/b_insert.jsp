@@ -20,10 +20,10 @@
 		<td><textarea rows="5" cols="50" name="content"></textarea>
 	</td>
 	</tr>
-	<tr>
+<%-- 	<tr>
 		<td>작성자 </td>
 		<td><input type="text" name="writer"></td>
-	</tr>
+	</tr> --%>
 	<tr>
 		<td>작성일시</td>
 		<td><input type="date" name="date"></td>

@@ -163,8 +163,7 @@ public class Controller extends HttpServlet {
 				board.setB_title(request.getParameter("title"));
 				board.setB_content(request.getParameter("content"));
 				board.setB_view(request.getParameter("view"));
-				board.setB_writer(request.getParameter("writer"));
-				board.setB_date(request.getParameter("date"));
+			//	board.setB_date(request.getParameter("date"));
 				
 				boardService = BoardService.getInstance();
 				boardService.insertBoard(board);
@@ -194,8 +193,7 @@ public class Controller extends HttpServlet {
 				board.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
 				board.setB_title(request.getParameter("edit_b_title"));
 				board.setB_content(request.getParameter("edit_b_content"));
-				board.setB_writer(request.getParameter("edit_b_writer"));
-				board.setB_date(request.getParameter("edit_b_date"));
+		//		board.setB_date(request.getParameter("edit_b_date"));
 				
 				boardService = BoardService.getInstance();
 				boardService.editBoard(board);

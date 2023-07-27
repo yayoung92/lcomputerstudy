@@ -19,15 +19,7 @@
 		width:200px;
 		text-align:center;
 	}
-	a {
-		text-decoration:none;
-		color:#000;
-		font-weight:700;
-		border:none;
-		cursor:pointer;
-		padding:10px;
-		
-	}
+
 </style>
 <body>
 	<h1>게시글 상세페이지</h1>
@@ -40,7 +32,7 @@
 		
 			<tr>
 				<td>작성자</td>
-				<td>${board.b_writer}</td>
+				<td>${board.user.u_id}</td>
 			</tr>
 			<tr>
 				<td>제목</td>	
@@ -58,7 +50,7 @@
 			</tr>
 				
 		</table>
-	<a href="board-b_list.do" style="width:70%;font-weight:700;background-color:#818181;color:#fff;" >돌아가기</a>
+	<a href="board-b_list.do"><input type="button" value="돌아가기"></a>
 	</form>
 </body>
 </html>

@@ -1,13 +1,15 @@
 package com.lcomputerstudy.testmvc.vo;
 
+import java.util.Date;
+
 public class Board {
 	private int b_idx;
 	private String b_title;
 	private String b_content;
 	private String b_view;
-	private String b_writer;
-	private String b_date;
-//	private int u_idx;
+	private Date b_date;
+	private int u_idx;
+	private User user;
 	
 	public int getB_idx() {
 		return b_idx;
@@ -33,24 +35,24 @@ public class Board {
 	public void setB_view(String b_view) {
 		this.b_view = b_view;
 	}
-	public String getB_writer() {
-		return b_writer;
-	}
-	public void setB_writer(String b_writer) {
-		this.b_writer = b_writer;
-	}
-	public String getB_date() {
+	public Date getB_date() {
 		return b_date;
 	}
-	public void setB_date(String b_date) {
+	public void setB_date(Date b_date) {
 		this.b_date = b_date;
 	}
-/*	public int getU_idx() {
+	public int getU_idx() {
 		return u_idx;
 	}
 	public void setU_idx(int u_idx) {
 		this.u_idx = u_idx;
 	}
-*/
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	
 }
