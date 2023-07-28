@@ -89,7 +89,8 @@
 				<td>${board.b_content}</td>
 				<td>${board.b_view}</td>
 				<td>${board.user.u_id}</td>
-				<td> <fmt:formatDate value="${board.getB_date()}" type="date" pattern="YYYY-MM-dd" /> </td>
+				<td>${board.b_date }</td>
+		<%-- 	 <td> <fmt:formatDate value="${board.b_date }" type="date" pattern="yyyy-MM-dd" /> </td>  --%>
 				<td><a href="board-b_edit.do?b_idx=${board.b_idx }"><input type="button" value="수정"></a></td>
 			</tr>
 		</c:forEach>

@@ -14,7 +14,7 @@
 	   		<p> 제목 : <input type="text" name="edit_b_title" value="${board.b_title}"></p>
 	   		<p> 내용 : <input type="text" name="edit_b_content" value="${board.b_content}"></p>
 	   		<p> 작성자 : <input type="text" name="edit_b_writer" value="${board.user.u_id}" readonly></p>
-	   		<p> 수정일시 : <input type="date" name="edit_b_date" value="${board.b_date}"></p>
+	   		<p><input type="hidden" name="edit_b_date" value="${board.b_date}"></p>
 	   		<p> <input type="submit" value="수정완료"></p>
 	   		<p> <a href="board-b_delete-process.do?b_idx=${board.b_idx}"><input type="button" value="삭제"></a></p>
      	 </form>

@@ -7,7 +7,15 @@ public class Board {
 	private String b_title;
 	private String b_content;
 	private String b_view;
-	private Date b_date;
+	private Date date;
+	private String b_date;
+	
+	public String getB_date() {
+		return b_date;
+	}
+	public void setB_date(String b_date) {
+		this.b_date = b_date;
+	}
 	private int u_idx;
 	private User user;
 	
@@ -35,11 +43,11 @@ public class Board {
 	public void setB_view(String b_view) {
 		this.b_view = b_view;
 	}
-	public Date getB_date() {
-		return b_date;
+	public Date getDate() {
+		return date;
 	}
-	public void setB_date(Date b_date) {
-		this.b_date = b_date;
+	public void setDate(Date date) {
+		this.date = date;
 	}
 	public int getU_idx() {
 		return u_idx;
