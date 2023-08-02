@@ -49,8 +49,6 @@ public class BoardDAO {
 	        while(rs.next()){
 	        	board = new Board();
 	        	user = new User();
-	       // 	Timestamp ts = new Timestamp(new Date().getTime());
-	       // 	int day = ts.getTime();
        	       	board.setB_idx(rs.getInt("b_idx"));
        	       	board.setB_title(rs.getString("b_title"));
        	       	board.setB_content(rs.getString("b_content"));
@@ -58,9 +56,6 @@ public class BoardDAO {
        	       	user.setU_id(rs.getString("user.u_id"));
        	       	board.setUser(user);
        	       	board.setB_date(rs.getString("b_date"));
-       	   //    	board.setDate(rs.getTimestamp("b_date"));
-       	   //    	board.setB_date(rs.getDate("b_date"));
-
        	       	list.add(board);
 	        }
 		} catch (Exception e) {
