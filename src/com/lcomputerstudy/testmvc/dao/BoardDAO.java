@@ -4,10 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import com.lcomputerstudy.testmvc.datebase.DBConnection;
 import com.lcomputerstudy.testmvc.vo.Board;
@@ -34,13 +31,8 @@ public class BoardDAO {
 		
 		try {
 			conn = DBConnection.getConnection();
-		//	String query = "select * from board";
 			String query = new StringBuilder()
-					.append("SELECT		*\n")
-					.append("FROM		board as ta\n")
-					.append("JOIN		user as tb\n")
-					.append("ON			ta.u_idx = tb.u_idx\n")
-					.append("ORDER BY	b_idx asc\n")
+					.append("select * from board join user on board.u_idx = user.u_idx")
 					.toString();
 			pstmt = conn.prepareStatement(query);
 			rs = pstmt.executeQuery();
@@ -49,18 +41,14 @@ public class BoardDAO {
 	        while(rs.next()){
 	        	board = new Board();
 	        	user = new User();
-	       // 	Timestamp ts = new Timestamp(new Date().getTime());
-	       // 	int day = ts.getTime();
        	       	board.setB_idx(rs.getInt("b_idx"));
        	       	board.setB_title(rs.getString("b_title"));
+       	       	board.setB_groub(board.getB_idx());
        	       	board.setB_content(rs.getString("b_content"));
        	       	board.setB_view(rs.getString("b_view"));
        	       	user.setU_id(rs.getString("user.u_id"));
        	       	board.setUser(user);
        	       	board.setB_date(rs.getString("b_date"));
-       	   //    	board.setDate(rs.getTimestamp("b_date"));
-       	   //    	board.setB_date(rs.getDate("b_date"));
-
        	       	list.add(board);
 	        }
 		} catch (Exception e) {
@@ -82,16 +70,6 @@ public class BoardDAO {
 		
 		try {
 			conn = DBConnection.getConnection();
-		//	String query = "insert into board(b_title,b_content,b_view,u_idx,b_date) values(?,?,0,?,?)";
-			/*String query = new StringBuilder()
-					.append("INSERT INTO board(b_title = ?, b_content = ?, b_view = 0, u_idx = ?)")
-					.append("SELECT		*\n")
-					.append("FROM		board as ta\n")
-					.append("JOIN		user as tb\n")
-					.append("ON			ta.u_idx = tb.u_idx\n")
-					.append("WHERE		tb.u_idx\n")
-			//		.append("value(?,?,0,now(),?\n")
-					.toString();*/
 			
 			String query = new StringBuilder()
 						.append("insert into board (b_title,b_content,b_view,u_idx,b_date) ")
@@ -101,7 +79,15 @@ public class BoardDAO {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, board.getB_title());
 			pstmt.setString(2, board.getB_content());
-			pstmt.setInt(3, board.getUser().getU_idx());
+			pstmt.setInt(3, board.getU_idx());
+			pstmt.executeUpdate();
+			pstmt.close();
+			
+			query = new StringBuilder()
+					.append("update board set b_group = last_insert_id() where b_idx = last_insert_id()")
+					.toString();
+			pstmt = conn.prepareStatement(query);
+		//	pstmt.setInt(0, board.getB_groub());
 			pstmt.executeUpdate();
 		} catch( Exception ex) {
 			ex.printStackTrace();
@@ -124,14 +110,7 @@ public class BoardDAO {
 		
 		try {
 			conn = DBConnection.getConnection();
-	  //    String query = "select * from board where b_idx=?";
-			String query = new StringBuilder()
-					.append("SELECT		*\n")
-					.append("FROM		board a\n")
-					.append("JOIN		user b\n")
-					.append("ON			a.u_idx = b.u_idx\n")
-					.append("WHERE		b_idx=?\n")
-					.toString();
+			String query = "select * from board join user on board.u_idx = user.u_idx where b_idx=?";
 		   	pstmt = conn.prepareStatement(query);
 		   	pstmt.setInt(1, bIdx);
 		    rs = pstmt.executeQuery();
@@ -144,7 +123,7 @@ public class BoardDAO {
 		    	board.setUser(user);
 		    	board.setB_title(rs.getString("b_title"));
 		    	board.setB_content(rs.getString("b_content"));
-		    	board.setDate(rs.getTimestamp("b_date"));
+		    	board.setB_date(rs.getString("b_date"));
 		    }
 		
 	    } catch(Exception e) {
@@ -159,7 +138,7 @@ public class BoardDAO {
 		
 		try {
 			conn = DBConnection.getConnection();
-		    String query = "UPDATE board SET b_view = b_view +1 where b_idx=" + boardNo;
+		    String query = "update board set b_view = b_view +1 where b_idx=" + boardNo;
 		   	pstmt = conn.prepareStatement(query);
 		   	pstmt.executeUpdate();
 		} catch(Exception e) {
@@ -175,17 +154,9 @@ public class BoardDAO {
 		
 		try {
 			conn = DBConnection.getConnection();
-	 //     String query = "select * from board where b_idx=?";
-			String query = new StringBuilder()
-					.append("SELECT		*\n")
-					.append("FROM		board a\n")
-					.append("JOIN		user b\n")
-					.append("ON			a.u_idx = b.u_idx\n")
-					.append("WHERE		b_idx=?\n")
-					.toString();
+	        String query = "select * from board join user on user.u_idx = board.u_idx where b_idx=?";
 	  	 	pstmt = conn.prepareStatement(query);
 		   	pstmt.setInt(1, bIdx);
-		   	
 	    	rs = pstmt.executeQuery();
 	
 	    	while(rs.next()){
@@ -194,10 +165,8 @@ public class BoardDAO {
 	    		board.setB_idx(rs.getInt("b_idx"));
 	    		board.setB_title(rs.getString("b_title"));
 	    		board.setB_content(rs.getString("b_content"));
-	    		board.setB_view(rs.getString("b_view"));
-	    		user.setU_id(rs.getString("u_id"));
+	    		user.setU_id(rs.getString("user.u_id"));
 	    		board.setUser(user);
-	    //		board.setB_date(rs.getString("b_date"));
 	    	}
     	} catch(Exception e) {
     		e.printStackTrace();
@@ -210,14 +179,11 @@ public class BoardDAO {
 			
 		try {
 			conn = DBConnection.getConnection();
-			String sql = "UPDATE board SET b_title = ?, b_content = ?, b_date = now() where b_idx=?";
+			String sql = "update board set b_title = ?, b_content = ?, b_date = now() where b_idx=?";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, board.getB_title());
 			pstmt.setString(2, board.getB_content());
-			pstmt.setString(3, board.getB_date());
-		//	pstmt.setDate(3, board.getB_date());
-		//	pstmt.setInt(3, 0);
-			pstmt.setInt(4, board.getB_idx());
+			pstmt.setInt(3, board.getB_idx());
 			pstmt.executeUpdate();
 		} catch( Exception e) {
 			e.printStackTrace();
@@ -237,7 +203,7 @@ public class BoardDAO {
 		
 		try {
 			conn = DBConnection.getConnection();
-			String query = "DELETE from board where b_idx=?";
+			String query = "delete from board where b_idx=?";
 			pstmt = conn.prepareStatement(query);
 			pstmt.setInt(1, bIdx);
 			pstmt.executeUpdate();
@@ -246,6 +212,23 @@ public class BoardDAO {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+	}
+	public Board replyBoard(Board board) {
+		PreparedStatement pstmt = null;
+		Connection conn = null;
+		
+		try {
+			conn = DBConnection.getConnection();
+			String query = "update board set re_level = re_level+1 where ref=? and re_level> ?";
+			pstmt = conn.prepareCall(query);
+            pstmt.setInt(1, board.getB_groub());
+            pstmt.setInt(2, board.getB_order());
+            pstmt.executeUpdate();
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return board;
 	}
 }
 

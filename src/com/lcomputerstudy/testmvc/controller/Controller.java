@@ -159,14 +159,12 @@ public class Controller extends HttpServlet {
 				view = "board/b_insert";
 				break;
 			case "/board-b_insert-process.do":
-				session = request.getSession();
-				
 				board = new Board();
 				board.setB_title(request.getParameter("title"));
 				board.setB_content(request.getParameter("content"));
-				user = (User)session.getAttribute("user");
-		//		user.setU_idx((User)session.getAttribute(request.getParameter("user")));
-				board.setUser(user);
+				board.setU_idx(Integer.parseInt(request.getParameter("user")));
+				board.setB_date(request.getParameter("date"));
+				board.setB_view(request.getParameter("view"));
 				
 				boardService = BoardService.getInstance();
 				boardService.insertBoard(board);
@@ -210,6 +208,23 @@ public class Controller extends HttpServlet {
 				request.setAttribute("board", board);
 				
 				view = "board/b_delete";
+				break;
+			case "/board-b_reply.do":
+				view = "board/b_reply";
+				break;
+			case "/board-b_reply-process.do":
+				int b_groub = Integer.parseInt(request.getParameter("b_groub"));
+				int b_order = Integer.parseInt(request.getParameter("b_order"));
+				int b_depth = Integer.parseInt(request.getParameter("b_depth"));
+				
+				boardService = BoardService.getInstance();
+				boardService.replyBoard(board);
+				
+				request.setAttribute("b_groub", b_groub);
+				request.setAttribute("b_order", b_order);
+				request.setAttribute("b_depth", b_depth);
+				
+				view = "board/b_reply-result";
 				break;
 		}
 		

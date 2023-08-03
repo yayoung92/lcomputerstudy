@@ -1,24 +1,48 @@
 package com.lcomputerstudy.testmvc.vo;
 
-import java.util.Date;
 
 public class Board {
 	private int b_idx;
 	private String b_title;
 	private String b_content;
 	private String b_view;
-	private Date date;
 	private String b_date;
+	private int u_idx;
+	private User user;
+	private int b_groub;
+	private int b_order;
+	private int b_depth;
 	
+	public int getB_groub() {
+		return b_groub;
+	}
+	public void setB_groub(int b_groub) {
+		this.b_groub = b_groub;
+	}
+	public int getB_order() {
+		return b_order;
+	}
+	public void setB_order(int b_order) {
+		this.b_order = b_order;
+	}
+	public int getB_depth() {
+		return b_depth;
+	}
+	public void setB_depth(int b_depth) {
+		this.b_depth = b_depth;
+	}
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
+	}
 	public String getB_date() {
 		return b_date;
 	}
 	public void setB_date(String b_date) {
 		this.b_date = b_date;
 	}
-	private int u_idx;
-	private User user;
-	
 	public int getB_idx() {
 		return b_idx;
 	}
@@ -43,23 +67,11 @@ public class Board {
 	public void setB_view(String b_view) {
 		this.b_view = b_view;
 	}
-	public Date getDate() {
-		return date;
-	}
-	public void setDate(Date date) {
-		this.date = date;
-	}
 	public int getU_idx() {
 		return u_idx;
 	}
 	public void setU_idx(int u_idx) {
 		this.u_idx = u_idx;
-	}
-	public User getUser() {
-		return user;
-	}
-	public void setUser(User user) {
-		this.user = user;
 	}
 
 	

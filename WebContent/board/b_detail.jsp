@@ -20,6 +20,15 @@
 		width:200px;
 		text-align:center;
 	}
+	a {
+		text-decoration:none;
+		color:#000;
+		font-weigth:700;
+		border:none;
+		cursor:pointer;
+		padding:10px;
+		display:inline-block;
+	}
 
 </style>
 <body>
@@ -47,12 +56,12 @@
 
 			<tr>
 				<td>날짜</td>	
-				<td><fmt:formatDate value="${board.b_date}" /></td>
-	<%-- 			<td>${board.b_date}</td> --%>
+				<td>${board.b_date}</td>
 			</tr>
 				
 		</table>
 	<a href="board-b_list.do"><input type="button" value="돌아가기"></a>
+	<a href="board-b_reply.do"><input type="button" value="답글"></a>
 	</form>
 </body>
 </html>

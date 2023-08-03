@@ -24,17 +24,11 @@
 	</tr>
  	<tr>
  		<td>작성자 </td>
-		<td><input type="text" name="user"></td>
-	</tr>
-<%--	<tr>
-		<td>비밀번호</td>
-		<td><input type="password" name="pw" value="${board.user.u_pw }"></td>
-	<tr>
-		<td>작성일시</td>
-		<td><input type="date" name="date" value="${board.b_date}" readonly></td>
-		</tr> --%> 
+		<td><input type="text" name="user">${board.user.u_idx }</td>
+	</tr> 
 	</table>
 	<input type="submit" value="글등록">
+
 </form>
 	
 </body>
