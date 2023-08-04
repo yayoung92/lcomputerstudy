@@ -9,15 +9,15 @@ public class Board {
 	private String b_date;
 	private int u_idx;
 	private User user;
-	private int b_groub;
+	private int b_group;
 	private int b_order;
 	private int b_depth;
 	
-	public int getB_groub() {
-		return b_groub;
+	public int getB_group() {
+		return b_group;
 	}
-	public void setB_groub(int b_groub) {
-		this.b_groub = b_groub;
+	public void setB_group(int b_group) {
+		this.b_group = b_group;
 	}
 	public int getB_order() {
 		return b_order;

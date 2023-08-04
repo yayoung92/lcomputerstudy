@@ -61,7 +61,7 @@
 				
 		</table>
 	<a href="board-b_list.do"><input type="button" value="돌아가기"></a>
-	<a href="board-b_reply.do"><input type="button" value="답글"></a>
+	<a href="board-b_reply.do?b_idx=${board.b_idx}"><input type="button" value="답글"></a>
 	</form>
 </body>
 </html>

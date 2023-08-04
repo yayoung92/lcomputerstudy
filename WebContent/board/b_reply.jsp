@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,8 +9,12 @@
 </head>
 <body>
 	<h3>답글 달기</h3>
-	<form action="board-b_reply-process.do" name="board" method="post">
-		<table>
+	<form action="board-b_reply-process.do?b_idx=${board.b_idx}" name="board" method="post">
+	<input type="hidden" name="b_idx" value="${board.b_idx}">
+	<input type="hidden" name="b_group" value="${board.b_group}">
+    <input type="hidden" name="b_order" value="${board.b_order}"> 
+    <input type="hidden" name="b_depth" value="${board.b_depth}"> 
+	<table>
 		<tr>
 			<td>제목 </td>
 				<td><input type="text" name="title"></td>
@@ -19,17 +24,15 @@
 			<td><textarea rows="5" cols="50" name="content"></textarea>
 		</td>
 		</tr>
-	 	<tr>
+	  	<tr>
 	 		<td>작성자 </td>
 			<td><input type="text" name="user">${board.user.u_idx }</td>
-		</tr> 
-		 <tr>
-        <td align="center" colspan="2"><input type="hidden" name="b_groub" value="${b_groub}">
-            <input type="hidden" name="b_order" value="${b_order}"> 
-            <input type="hidden" name="b_depth" value="${b_depth}"> 
-    </tr>
-		</table>
-	</form>
+		</tr>
+		 
+	</table>
+
 	<input type="submit" value="글등록">
+	</form>
+	
 </body>
 </html>

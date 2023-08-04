@@ -43,7 +43,6 @@ public class BoardDAO {
 	        	user = new User();
        	       	board.setB_idx(rs.getInt("b_idx"));
        	       	board.setB_title(rs.getString("b_title"));
-       	       	board.setB_groub(board.getB_idx());
        	       	board.setB_content(rs.getString("b_content"));
        	       	board.setB_view(rs.getString("b_view"));
        	       	user.setU_id(rs.getString("user.u_id"));
@@ -72,8 +71,8 @@ public class BoardDAO {
 			conn = DBConnection.getConnection();
 			
 			String query = new StringBuilder()
-						.append("insert into board (b_title,b_content,b_view,u_idx,b_date) ")
-						.append("value (?, ?, 0, ?, now()) ")
+						.append("insert into board (b_title,b_content,b_view,u_idx,b_date,b_order, b_depth) ")
+						.append("value (?, ?, 0, ?, now(), 1, 0) ")
 						.toString();
 
 			pstmt = conn.prepareStatement(query);
@@ -87,7 +86,6 @@ public class BoardDAO {
 					.append("update board set b_group = last_insert_id() where b_idx = last_insert_id()")
 					.toString();
 			pstmt = conn.prepareStatement(query);
-		//	pstmt.setInt(0, board.getB_groub());
 			pstmt.executeUpdate();
 		} catch( Exception ex) {
 			ex.printStackTrace();
@@ -213,23 +211,43 @@ public class BoardDAO {
 			e.printStackTrace();
 		}
 	}
-	public Board replyBoard(Board board) {
+	public void replyBoard(Board board) {
 		PreparedStatement pstmt = null;
 		Connection conn = null;
 		
 		try {
 			conn = DBConnection.getConnection();
-			String query = "update board set re_level = re_level+1 where ref=? and re_level> ?";
-			pstmt = conn.prepareCall(query);
-            pstmt.setInt(1, board.getB_groub());
-            pstmt.setInt(2, board.getB_order());
+		//	String query = "insert into board b_title = ?, b_content =?, u_idx = u_idx, b_view = 0, b_order = b_order + 1 where b_group=? and b_order= ?";
+			String query = new StringBuilder()
+					.append("insert into board (b_title,b_content,u_idx,b_view,b_date,b_group > 0,b_order,b_depth) ")
+					.append("value (?, ?, ?, 0, now(), 1, ?, ? ) ")
+					.toString();
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, board.getB_title());
+			pstmt.setString(2, board.getB_content());
+			pstmt.setInt(3, board.getU_idx());
+	//		pstmt.setInt(4, board.getB_group());
+            pstmt.setInt(4, board.getB_order() +1);
+            pstmt.setInt(5, board.getB_depth() +1);
             pstmt.executeUpdate();
-			
+ //           pstmt.close();
+//			
+ //           query = "update board set ";
+  //          pstmt = conn.prepareStatement(query);
+    //        pstmt.executeUpdate();
 		} catch(Exception e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				if (pstmt != null) pstmt.close();
+				if (conn != null) conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
 		}
-		return board;
-	}
+	} 
+
 }
 
 
