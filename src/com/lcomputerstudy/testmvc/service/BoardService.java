@@ -39,8 +39,11 @@ public class BoardService {
 	public void deleteBoard(int bIdx) {
 		dao.deleteBoard(bIdx);
 	}
-	public void replyBoard(Board board) {
-		dao.replyBoard(board);
+	public void replyBoard(int bidx) {
+		dao.replyBoard(bidx);
+	}
+	public Board reBoard(Board board) {
+		return dao.reBoard(board);
 	}
 }
 

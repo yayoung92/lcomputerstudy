@@ -17,7 +17,7 @@
 	<table>
 		<tr>
 			<td>제목 </td>
-				<td><input type="text" name="title"></td>
+				<td><input type="text" name="title" value="[답변]" size="60"></td>
 			</tr>
 		<tr>
 			<td>내용 </td>
@@ -26,7 +26,7 @@
 		</tr>
 	  	<tr>
 	 		<td>작성자 </td>
-			<td><input type="text" name="user">${board.user.u_idx }</td>
+			<td><input type="text" name="user">${board.u_idx }</td>
 		</tr>
 		 
 	</table>

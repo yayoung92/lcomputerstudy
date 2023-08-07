@@ -210,18 +210,27 @@ public class Controller extends HttpServlet {
 				view = "board/b_delete";
 				break;
 			case "/board-b_reply.do":
+		/*		bIdx = Integer.parseInt(request.getParameter("b_idx"));
+				boardService = BoardService.getInstance();
+				boardService.replyBoard(bIdx);
+				request.setAttribute("board", board); */
 				view = "board/b_reply";
 				break;
 			case "/board-b_reply-process.do":
+				
 				board = new Board();
 				board.setB_title(request.getParameter("title"));
 				board.setB_content(request.getParameter("content"));
 				board.setU_idx(Integer.parseInt(request.getParameter("user")));
 				board.setB_date(request.getParameter("date"));
 				board.setB_view(request.getParameter("view"));
+				
+		//		board.setB_group(Integer.parseInt(request.getParameter("b_group")));
+		//		board.setB_order(Integer.parseInt(request.getParameter("b_order")));
+		//		board.setB_depth(Integer.parseInt(request.getParameter("b_depth")));
 
 				boardService = BoardService.getInstance();
-				boardService.replyBoard(board);
+				boardService.reBoard(board);
 				
 				view = "board/b_reply-result";
 				break;
