@@ -10,26 +10,25 @@
 <title>글 작성하기</title>
 </head>
 <body>
-	<h2> 글 작성하기 </h2>
+ 	<h2> 글 작성하기 </h2>
 	<form action="board-b_insert-process.do" name="board" method="post">
-	<table>
-	<tr>
-		<td>제목 </td>
-			<td><input type="text" name="title"></td>
+		<table>
+		<tr>
+			<td>제목 </td>
+				<td><input type="text" name="title"></td>
+			</tr>
+		<tr>
+			<td>내용 </td>
+			<td><textarea rows="5" cols="50" name="content"></textarea>
+		</td>
 		</tr>
-	<tr>
-		<td>내용 </td>
-		<td><textarea rows="5" cols="50" name="content"></textarea>
-	</td>
-	</tr>
- 	<tr>
- 		<td>작성자 </td>
-		<td><input type="text" name="user">${board.user.u_idx }</td>
-	</tr> 
-	</table>
-	<input type="submit" value="글등록">
-
-</form>
+	 	<tr>
+	 		<td>작성자 </td>
+			<td>${sessionScope.user.u_name }</td>
+		</tr> 
+		</table>
+		<input type="submit" value="글등록">
+	</form>
 	
 </body>
 </html>

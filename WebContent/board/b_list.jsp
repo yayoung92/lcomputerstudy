@@ -65,7 +65,7 @@
 	<h1>무엇이든 적어보자 y게시판y 찡긋 </h1>
 	<table style="text-align:center;">
 		<col width="50px">
-		<col width="100px">
+		<col width="150px">
 		<col width="200px">
 		<col width="50px">
 		<col width="70px">
@@ -85,7 +85,9 @@
 		<c:forEach items="${b_list}" var="board">
 			<tr>
 				<td><a href="board-b_detail.do?b_idx=${board.b_idx}">${board.b_idx}</a></td>
-				<td>${board.b_title}</td>
+				<td>
+				<c:forEach begin="1" end="${board.b_depth}">&nbsp;</c:forEach>
+				<c:if test="${board.b_depth !=0}">ㄴ</c:if>${board.b_title}</td>
 				<td>${board.b_content}</td>
 				<td>${board.b_view}</td>
 				<td>${board.user.u_id}</td>

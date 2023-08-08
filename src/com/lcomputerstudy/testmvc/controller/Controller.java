@@ -38,6 +38,7 @@ public class Controller extends HttpServlet {
 		String idx = null;
 		User user = null;
 		Board board = null;
+		Board boardParent = null;
 		int uIdx = 0;
 		int bIdx = 0;
 		int usercount = 0;
@@ -159,10 +160,15 @@ public class Controller extends HttpServlet {
 				view = "board/b_insert";
 				break;
 			case "/board-b_insert-process.do":
+				session = request.getSession();
+				user = (User)session.getAttribute("user");
+				
+		//		bIdx = Integer.parseInt(request.getParameter("b_idx"));
 				board = new Board();
 				board.setB_title(request.getParameter("title"));
 				board.setB_content(request.getParameter("content"));
-				board.setU_idx(Integer.parseInt(request.getParameter("user")));
+				board.setU_idx(user.getU_idx());
+		//		board.setU_idx(Integer.parseInt(request.getParameter("user")));
 				board.setB_date(request.getParameter("date"));
 				board.setB_view(request.getParameter("view"));
 				
@@ -210,29 +216,31 @@ public class Controller extends HttpServlet {
 				view = "board/b_delete";
 				break;
 			case "/board-b_reply.do":
-		/*		bIdx = Integer.parseInt(request.getParameter("b_idx"));
-				boardService = BoardService.getInstance();
-				boardService.replyBoard(bIdx);
-				request.setAttribute("board", board); */
+				request.setAttribute("b_idx", request.getParameter("b_idx"));
 				view = "board/b_reply";
 				break;
 			case "/board-b_reply-process.do":
+				session = request.getSession();
+				user = (User)session.getAttribute("user");
+				
+				bIdx = Integer.parseInt(request.getParameter("b_idx"));
+				
+				boardService = BoardService.getInstance();
+				boardParent = boardService.getBoard(bIdx);
 				
 				board = new Board();
 				board.setB_title(request.getParameter("title"));
 				board.setB_content(request.getParameter("content"));
-				board.setU_idx(Integer.parseInt(request.getParameter("user")));
-				board.setB_date(request.getParameter("date"));
-				board.setB_view(request.getParameter("view"));
-				
-		//		board.setB_group(Integer.parseInt(request.getParameter("b_group")));
-		//		board.setB_order(Integer.parseInt(request.getParameter("b_order")));
-		//		board.setB_depth(Integer.parseInt(request.getParameter("b_depth")));
+				board.setU_idx(user.getU_idx());
+		//		board.setU_idx(Integer.parseInt(request.getParameter("user")));
+				board.setB_group(boardParent.getB_group());
+				board.setB_order(boardParent.getB_order());
+				board.setB_depth(boardParent.getB_depth());
 
 				boardService = BoardService.getInstance();
 				boardService.reBoard(board);
 				
-				view = "board/b_reply-result";
+				view = "board/b_insert-result";
 				break;
 		}
 		

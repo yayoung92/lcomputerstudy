@@ -32,7 +32,7 @@ public class BoardDAO {
 		try {
 			conn = DBConnection.getConnection();
 			String query = new StringBuilder()
-					.append("select * from board join user on board.u_idx = user.u_idx")
+					.append("select * from board join user on board.u_idx = user.u_idx order by b_group desc, b_order asc;")
 					.toString();
 			pstmt = conn.prepareStatement(query);
 			rs = pstmt.executeQuery();
@@ -48,6 +48,8 @@ public class BoardDAO {
        	       	user.setU_id(rs.getString("user.u_id"));
        	       	board.setUser(user);
        	       	board.setB_date(rs.getString("b_date"));
+       	       	board.setB_order(rs.getInt("b_order"));
+       	       	board.setB_depth(rs.getInt("b_depth"));
        	       	list.add(board);
 	        }
 		} catch (Exception e) {
@@ -165,6 +167,9 @@ public class BoardDAO {
 	    		board.setB_content(rs.getString("b_content"));
 	    		user.setU_id(rs.getString("user.u_id"));
 	    		board.setUser(user);
+	    		board.setB_group(rs.getInt("b_group"));
+	    		board.setB_order(rs.getInt("b_order"));
+	    		board.setB_depth(rs.getInt("b_depth"));
 	    	}
     	} catch(Exception e) {
     		e.printStackTrace();
@@ -211,45 +216,13 @@ public class BoardDAO {
 			e.printStackTrace();
 		}
 	}
-	public void replyBoard(int bidx) {
-		PreparedStatement pstmt = null;
-		Connection conn = null;
-		Board board = null;
-		ResultSet rs = null;
-		
-		try {
-			conn = DBConnection.getConnection();
-			String query = "update board set b_group=b_idx where b_idx=?";
-            pstmt = conn.prepareStatement(query);
-		  	pstmt.setInt(1, bidx);
-		   	rs = pstmt.executeQuery();
-		   	
-		   	while(rs.next()){  
-		    	board = new Board();
-		 //   	board.setB_idx(rs.getInt("b_idx"));
-		    	board.setB_group(rs.getInt("b_group"));
-		   	}
-            
-		} catch(Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (pstmt != null) pstmt.close();
-				if (conn != null) conn.close();
-				if (rs != null) rs.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
-		}
-	}
-	public Board reBoard(Board board) {
+	public void reBoard(Board board) {
 		PreparedStatement pstmt = null;
 		Connection conn = null;
 		
 		try {
 			conn = DBConnection.getConnection();
-			String query = "update board set b_order=b_order+1 where b_group=? and b_order >?";
+            String query = "update board set b_order=b_order+1 where b_group=? and b_order >?";
             pstmt = conn.prepareStatement(query);
             pstmt.setInt(1, board.getB_group());
             pstmt.setInt(2, board.getB_order());
@@ -268,6 +241,7 @@ public class BoardDAO {
             pstmt.setInt(5, board.getB_order()+1);
             pstmt.setInt(6, board.getB_depth()+1);
             pstmt.executeUpdate();
+
 			
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -280,7 +254,6 @@ public class BoardDAO {
 			}
 
 		}
-		return board;
 	}
 }
 

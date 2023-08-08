@@ -63,5 +63,24 @@
 	<a href="board-b_list.do"><input type="button" value="돌아가기"></a>
 	<a href="board-b_reply.do?b_idx=${board.b_idx}"><input type="button" value="답글"></a>
 	</form>
+	
+	<h3>댓글 달기</h3>
+	<table>
+			<tr>
+				<td>제목 </td>
+					<td><input type="text" name="title" size="60"></td>
+				</tr>
+			<tr>
+				<td>내용 </td>
+				<td><textarea rows="5" cols="50" name="content"></textarea>
+			</td>
+			</tr>
+		  	<tr>
+		 		<td>작성자 </td>
+		 	  	<td>${sessionScope.user.u_name }</td>
+				<!--  td><input type="text" name="user">${board.u_idx }</td -->
+			</tr>
+	</table>
+	<h3>댓글 리스트</h3>
 </body>
 </html>
