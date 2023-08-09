@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import com.lcomputerstudy.testmvc.datebase.DBConnection;
 import com.lcomputerstudy.testmvc.vo.Board;
+import com.lcomputerstudy.testmvc.vo.Comment;
 import com.lcomputerstudy.testmvc.vo.User;
 
 public class BoardDAO {
@@ -197,7 +198,6 @@ public class BoardDAO {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-
 		}
 	}
 	public void deleteBoard(int bIdx) {
@@ -241,7 +241,6 @@ public class BoardDAO {
             pstmt.setInt(5, board.getB_order()+1);
             pstmt.setInt(6, board.getB_depth()+1);
             pstmt.executeUpdate();
-
 			
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -252,8 +251,109 @@ public class BoardDAO {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+	public ArrayList<Comment> getComments(int bIdx) {
+		PreparedStatement pstmt = null;
+		Connection conn = null;
+		ResultSet rs = null;
+		ArrayList<Comment> list = null;
+		Comment comment = null;
+		Board board = null;
+		User user = null;
+		
+		try {
+			conn = DBConnection.getConnection();
+			String query = "select * from `comment` join board on board.b_idx = `comment`.b_idx join user on user.u_idx = `comment`.u_idx where `comment`.b_idx=?";
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, bIdx);
+			rs = pstmt.executeQuery();
+			list = new ArrayList<Comment>();
+
+	        while(rs.next()){
+	        	board = new Board();
+	        	user = new User();
+	        	comment = new Comment();
+	        	comment.setC_idx(rs.getInt("c_idx"));
+	        	comment.setC_content(rs.getString("c_content"));
+       	       	comment.setC_date(rs.getString("c_date"));
+       	       	board.setB_idx(rs.getInt("b_idx"));
+       	       	comment.setBoard(board);
+       	       	user.setU_id(rs.getString("user.u_id"));
+       	       	comment.setUser(user);
+       	       	list.add(comment);
+	        }
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) rs.close();
+				if (pstmt != null) pstmt.close();
+				if (conn != null) conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return list;
+	}
+	public void insertComment(Comment comment) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			conn = DBConnection.getConnection();
+			String query = new StringBuilder()
+						.append("insert into `comment` (c_content,c_date,b_idx,u_idx) ")
+						.append("value (?, now(),?,?) ")
+						.toString();
+
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, comment.getC_content());
+			pstmt.setInt(2, comment.getB_idx());
+			pstmt.setInt(3, comment.getU_idx());
+			pstmt.executeUpdate();
+			
+		} catch( Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			try {
+				if (pstmt != null) pstmt.close();
+				if (conn != null) conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 
 		}
+	}public Comment getComment(int bIdx) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Board board = null;
+		User user = null;
+		Comment comment = null;
+		
+		try {
+			conn = DBConnection.getConnection();
+	        String query = "select * from `comment` join user on user.u_idx = `comment`.u_idx join board on board.b_idx = `comment`.b_idx where c_idx=?";
+	  	 	pstmt = conn.prepareStatement(query);
+		   	pstmt.setInt(1, bIdx);
+	    	rs = pstmt.executeQuery();
+	
+	    	while(rs.next()){
+	    		comment = new Comment();
+	    		board = new Board();
+	    		user = new User();
+	    		comment.setC_idx(rs.getInt("c_idx"));
+	    		comment.setC_content(rs.getString("c_content"));
+	    		user.setU_id(rs.getString("user.u_id"));
+	    		comment.setUser(user);
+	    		board.setB_idx(rs.getInt("board.b_idx"));
+	    		comment.setBoard(board);
+	    	}
+    	} catch(Exception e) {
+    		e.printStackTrace();
+    	}
+		return comment;
 	}
 }
 

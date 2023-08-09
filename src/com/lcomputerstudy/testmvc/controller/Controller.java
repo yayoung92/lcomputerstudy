@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import com.lcomputerstudy.testmvc.service.BoardService;
 import com.lcomputerstudy.testmvc.service.UserService;
 import com.lcomputerstudy.testmvc.vo.Board;
+import com.lcomputerstudy.testmvc.vo.Comment;
 import com.lcomputerstudy.testmvc.vo.Pagination;
 import com.lcomputerstudy.testmvc.vo.User;
 
@@ -39,6 +40,8 @@ public class Controller extends HttpServlet {
 		User user = null;
 		Board board = null;
 		Board boardParent = null;
+		Comment comment = null;
+		Comment commentParent = null;
 		int uIdx = 0;
 		int bIdx = 0;
 		int usercount = 0;
@@ -163,7 +166,6 @@ public class Controller extends HttpServlet {
 				session = request.getSession();
 				user = (User)session.getAttribute("user");
 				
-		//		bIdx = Integer.parseInt(request.getParameter("b_idx"));
 				board = new Board();
 				board.setB_title(request.getParameter("title"));
 				board.setB_content(request.getParameter("content"));
@@ -178,11 +180,35 @@ public class Controller extends HttpServlet {
 				view = "board/b_insert-result";
 				break;
 			case "/board-b_detail.do":
+				session = request.getSession();
+				user = (User)session.getAttribute("user");
+				
 				bIdx = Integer.parseInt(request.getParameter("b_idx"));
+	//			boardService = BoardService.getInstance();
+	//			board = boardService.detailBoard(bIdx);
+	//			ArrayList<Comment> clist = boardService.getComments(bIdx);
+				
+	//			request.setAttribute("board", board);
+	//			request.setAttribute("comment", clist);
+				
+				
+	//			bIdx = Integer.parseInt(request.getParameter("b_idx"));
+				comment = new Comment();
+				comment.setC_content(request.getParameter("content"));
+				comment.setU_idx(user.getU_idx());
+				comment.setB_idx(bIdx);
+				comment.setC_date(request.getParameter("date"));
+				
 				boardService = BoardService.getInstance();
+				boardService.insertComment(comment);
 				board = boardService.detailBoard(bIdx);
 				
+				ArrayList<Comment> clist = boardService.getComments(bIdx);
 				request.setAttribute("board", board);
+				request.setAttribute("comment", clist);
+				
+				
+				
 				boardService.boardViews(bIdx);  //클릭할수록 조회수 증가
 				
 				view = "board/b_detail";
@@ -241,6 +267,26 @@ public class Controller extends HttpServlet {
 				boardService.reBoard(board);
 				
 				view = "board/b_insert-result";
+				break;
+			case "/c_comment.do":
+				session = request.getSession();
+				user = (User)session.getAttribute("user");
+				
+			//	bIdx = Integer.parseInt(request.getParameter("b_idx"));
+				
+			//	boardService = BoardService.getInstance();
+		//	commentParent = boardService.getComment(bIdx);
+				
+				comment = new Comment();
+				comment.setC_content(request.getParameter("content"));
+				comment.setU_idx(user.getU_idx());
+				comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
+				comment.setC_date(request.getParameter("date"));
+				
+				boardService = BoardService.getInstance();
+				boardService.insertComment(comment);
+						
+			//	view = "board/b_detail";
 				break;
 		}
 		
