@@ -1,5 +1,6 @@
 package com.lcomputerstudy.testmvc.vo;
 
+import java.util.List;
 
 public class Board {
 	private int b_idx;
@@ -12,7 +13,15 @@ public class Board {
 	private int b_group;
 	private int b_order;
 	private int b_depth;
+	private List<Comment> commentList;
 	
+	
+	public List<Comment> getCommentList() {
+		return commentList;
+	}
+	public void setCommentList(List<Comment> commentList) {
+		this.commentList = commentList;
+	}
 	public int getB_group() {
 		return b_group;
 	}

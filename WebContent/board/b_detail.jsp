@@ -64,13 +64,12 @@
 	<a href="board-b_reply.do?b_idx=${board.b_idx}"><input type="button" value="답글"></a>
 	<h3>댓글 리스트</h3>
 		<hr>
-		
-		<c:forEach items="${comment }" var="comment">
-			${comment.c_idx }<br>
+	  	<c:forEach items="${comment}" var="comment">
+			${comment.user.u_id }<br>
 			${comment.c_content }<br>
 			${comment.c_date }<br>
 		</c:forEach>	
-	<!--  /form-->
+	</form>
 	<h3>댓글 달기</h3> 
 	
 		<div>작성자 : ${sessionScope.user.u_name }
@@ -78,14 +77,14 @@
 			<textarea rows="5" cols="50" name="content"></textarea>
 			<input type="submit" value="글등록">
 		</div>
-	<!--  form action="c_comment.do" name="comment" method="post">
+	<form action="c_comment.do" name="comment" method="post">
 	<h3>댓글 달기</h3> 
-	<input type="hidden" name="b_idx" value="${b_idx}"> 
+	<input type="hidden" name="b_idx" value="${board.b_idx}"> 
 		<div>작성자 : ${sessionScope.user.u_name }</div>
 		<div>
 			<textarea rows="5" cols="50" name="content"></textarea>
 			<input type="submit" value="글등록">
-		</div -->
+		</div>
 
 	</form>
 </body>

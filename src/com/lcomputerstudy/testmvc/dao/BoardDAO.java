@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.lcomputerstudy.testmvc.datebase.DBConnection;
 import com.lcomputerstudy.testmvc.vo.Board;
@@ -126,7 +127,7 @@ public class BoardDAO {
 		    	board.setB_content(rs.getString("b_content"));
 		    	board.setB_date(rs.getString("b_date"));
 		    }
-		
+		    
 	    } catch(Exception e) {
 	    	e.printStackTrace();
 	    }
@@ -253,7 +254,7 @@ public class BoardDAO {
 			}
 		}
 	}
-	public ArrayList<Comment> getComments(int bIdx) {
+	public List<Comment> getComments(int bIdx) {
 		PreparedStatement pstmt = null;
 		Connection conn = null;
 		ResultSet rs = null;
@@ -264,7 +265,7 @@ public class BoardDAO {
 		
 		try {
 			conn = DBConnection.getConnection();
-			String query = "select * from `comment` join board on board.b_idx = `comment`.b_idx join user on user.u_idx = `comment`.u_idx where `comment`.b_idx=?";
+			String query = "select * from `comment` left join board on board.b_idx = `comment`.b_idx left join user on user.u_idx = `comment`.u_idx where `comment`.b_idx=?";
 			pstmt = conn.prepareStatement(query);
 			pstmt.setInt(1, bIdx);
 			rs = pstmt.executeQuery();
@@ -277,7 +278,7 @@ public class BoardDAO {
 	        	comment.setC_idx(rs.getInt("c_idx"));
 	        	comment.setC_content(rs.getString("c_content"));
        	       	comment.setC_date(rs.getString("c_date"));
-       	       	board.setB_idx(rs.getInt("b_idx"));
+       	       	board.setB_idx(rs.getInt("board.b_idx"));
        	       	comment.setBoard(board);
        	       	user.setU_id(rs.getString("user.u_id"));
        	       	comment.setUser(user);
@@ -295,6 +296,73 @@ public class BoardDAO {
 			}
 		}
 		return list;
+	}
+	public Board getCom(int bIdx) {
+		PreparedStatement pstmt = null;
+		Connection conn = null;
+		ResultSet rs = null;
+		ArrayList<Board> list = null;
+		Comment comment = null;
+		Board board = null;
+		User user = null;
+		
+		try {
+			conn = DBConnection.getConnection();
+	//		String query = "select * from `comment` join board on board.b_idx = `comment`.b_idx join user on user.u_idx = `comment`.u_idx where `comment`.b_idx=?";
+			String query = new StringBuilder()
+					.append("SELECT		* ")
+					.append("FROM		board ta")
+					.append("LEFT JOIN	user tb ON ta.u_idx = tb.u_idx")
+					.append("LEFT JOIN	`comment` tc ON ta.b_idx = tc.b_idx")
+					.append("LEFT JOIN 	user td ON tc.u_idx = td.u_idx")
+					.append("WHERE		ta.b_idx=?")
+					.toString();
+	//		String query = "select * from `comment` t left join user b t.u_idx = b.u_idx where t.b_idx";
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, bIdx);
+			rs = pstmt.executeQuery();
+			list = new ArrayList<Board>();
+
+			int tmpBIdx = 0;
+			List<Comment> commentList = null;
+			
+	        while(rs.next()){
+	        	if (board.getB_idx() != tmpBIdx) {
+	        		commentList = new ArrayList<>();
+	        		board = new Board();
+	        		tmpBIdx = rs.getInt("b_idx");
+		        	board.setB_idx(tmpBIdx);
+		        	board.setB_title(rs.getString("b_title"));
+			    	board.setB_content(rs.getString("b_content"));
+			    	board.setB_date(rs.getString("b_date"));
+		        	
+		        	user = new User();
+		        	user.setU_id(rs.getString("tb.u_id"));
+		        	
+			    	board.setUser(user);
+	        	}
+	        	
+	        	
+	        	comment = new Comment();
+		    	comment.setC_idx(rs.getInt("c_idx"));
+	        	comment.setC_content(rs.getString("c_content"));
+       	       	comment.setC_date(rs.getString("c_date"));
+       	       	commentList.add(comment);
+       	       	
+       	       	board.setCommentList(commentList);
+	        }
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) rs.close();
+				if (pstmt != null) pstmt.close();
+				if (conn != null) conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return board;
 	}
 	public void insertComment(Comment comment) {
 		Connection conn = null;

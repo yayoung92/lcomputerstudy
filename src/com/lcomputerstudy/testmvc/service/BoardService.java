@@ -1,6 +1,8 @@
 package com.lcomputerstudy.testmvc.service;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import com.lcomputerstudy.testmvc.dao.BoardDAO;
 import com.lcomputerstudy.testmvc.vo.Board;
 import com.lcomputerstudy.testmvc.vo.Comment;
@@ -43,7 +45,7 @@ public class BoardService {
 	public void reBoard(Board board) {
 		dao.reBoard(board);
 	}
-	public ArrayList<Comment> getComments(int bIdx) {
+	public List<Comment> getComments(int bIdx) {
 		return dao.getComments(bIdx);
 	}
 	public void insertComment(Comment comment) {
@@ -51,6 +53,9 @@ public class BoardService {
 	}
 	public Comment getComment(int bIdx) {
 		return dao.getComment(bIdx);
+	}
+	public Board getCom(int bIdx) {
+		return dao.getCom(bIdx);
 	}
 }
 
