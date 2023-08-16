@@ -51,11 +51,17 @@ public class BoardService {
 	public void insertComment(Comment comment) {
 		dao.insertComment(comment);
 	}
-	public Comment getComment(int bIdx) {
-		return dao.getComment(bIdx);
-	}
 	public Board getCom(int bIdx) {
 		return dao.getCom(bIdx);
+	}
+	public void deleteComment(int cIdx) {
+		dao.deleteComment(cIdx);
+	}
+	public void reComment(Comment comment) {
+		dao.reComment(comment);
+	}
+	public Comment getComment(int cIdx) {
+		return dao.getComment(cIdx);
 	}
 }
 

@@ -282,6 +282,9 @@ public class BoardDAO {
        	       	comment.setBoard(board);
        	       	user.setU_id(rs.getString("user.u_id"));
        	       	comment.setUser(user);
+       	       	comment.setC_group(rs.getInt("c_group"));
+       	       	comment.setC_order(rs.getInt("c_order"));
+       	       	comment.setC_depth(rs.getInt("c_depth"));
        	       	list.add(comment);
 	        }
 		} catch (Exception e) {
@@ -338,15 +341,16 @@ public class BoardDAO {
 		        	
 		        	user = new User();
 		        	user.setU_id(rs.getString("tb.u_id"));
-		        	
 			    	board.setUser(user);
 	        	}
-	        	
-	        	
+
 	        	comment = new Comment();
 		    	comment.setC_idx(rs.getInt("c_idx"));
 	        	comment.setC_content(rs.getString("c_content"));
        	       	comment.setC_date(rs.getString("c_date"));
+       	       	comment.setC_group(rs.getInt("c_group"));
+       	       	comment.setC_order(rs.getInt("c_order"));
+       	       	comment.setC_depth(rs.getInt("c_depth"));
        	       	commentList.add(comment);
        	       	
        	       	board.setCommentList(commentList);
@@ -371,14 +375,21 @@ public class BoardDAO {
 		try {
 			conn = DBConnection.getConnection();
 			String query = new StringBuilder()
-						.append("insert into `comment` (c_content,c_date,b_idx,u_idx) ")
-						.append("value (?, now(),?,?) ")
+						.append("insert into `comment` (c_content,c_date,b_idx,u_idx,c_order,c_depth) ")
+						.append("value (?, now(),?,?,1,0) ")
 						.toString();
 
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, comment.getC_content());
 			pstmt.setInt(2, comment.getB_idx());
 			pstmt.setInt(3, comment.getU_idx());
+			pstmt.executeUpdate();
+			pstmt.close();
+			
+			query = new StringBuilder()
+					.append("update `comment` set c_group = last_insert_id() where c_idx = last_insert_id()")
+					.toString();
+			pstmt = conn.prepareStatement(query);
 			pstmt.executeUpdate();
 			
 		} catch( Exception ex) {
@@ -392,7 +403,60 @@ public class BoardDAO {
 			}
 
 		}
-	}public Comment getComment(int bIdx) {
+	}
+	public void deleteComment(int cIdx) {
+		PreparedStatement pstmt = null;
+		Connection conn = null;
+		
+		try {
+			conn = DBConnection.getConnection();
+			String query = "delete from `comment` where c_idx=?";
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, cIdx);
+			pstmt.executeUpdate();
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void reComment(Comment comment) {
+		PreparedStatement pstmt = null;
+		Connection conn = null;
+		
+		try {
+			conn = DBConnection.getConnection();
+			String query = "update `comment` set c_order=c_order+1 where c_group=? and c_order >?";
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, comment.getC_group());
+            pstmt.setInt(2, comment.getC_order());
+			pstmt.executeUpdate();
+			pstmt.close();
+			
+			query = new StringBuilder()
+					.append("insert into `comment` (c_content,c_date,b_idx,u_idx,c_group,c_order, c_depth) ")
+					.append("value (?, now(), ?, ?, ?, ?, ?) ")
+					.toString();
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, comment.getC_content());
+			pstmt.setInt(2, comment.getB_idx());
+			pstmt.setInt(3, comment.getU_idx());
+			pstmt.setInt(4, comment.getC_group());
+			pstmt.setInt(5, comment.getC_order());
+			pstmt.setInt(6, comment.getC_depth());
+			pstmt.executeUpdate();
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstmt != null) pstmt.close();
+				if (conn != null) conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	public Comment getComment(int cIdx) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -404,19 +468,25 @@ public class BoardDAO {
 			conn = DBConnection.getConnection();
 	        String query = "select * from `comment` join user on user.u_idx = `comment`.u_idx join board on board.b_idx = `comment`.b_idx where c_idx=?";
 	  	 	pstmt = conn.prepareStatement(query);
-		   	pstmt.setInt(1, bIdx);
+		   	pstmt.setInt(1, cIdx);
 	    	rs = pstmt.executeQuery();
 	
 	    	while(rs.next()){
-	    		comment = new Comment();
 	    		board = new Board();
 	    		user = new User();
-	    		comment.setC_idx(rs.getInt("c_idx"));
-	    		comment.setC_content(rs.getString("c_content"));
-	    		user.setU_id(rs.getString("user.u_id"));
-	    		comment.setUser(user);
+	    		comment = new Comment();
+	    		
 	    		board.setB_idx(rs.getInt("board.b_idx"));
 	    		comment.setBoard(board);
+	  
+	    		comment.setC_content(rs.getString("c_content"));
+	    		
+	    		user.setU_id(rs.getString("user.u_id"));
+	    		comment.setUser(user);
+	    		
+	    		comment.setC_group(rs.getInt("c_group"));
+	    		comment.setC_order(rs.getInt("c_order"));
+	    		comment.setC_depth(rs.getInt("c_depth"));
 	    	}
     	} catch(Exception e) {
     		e.printStackTrace();

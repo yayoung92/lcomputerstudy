@@ -62,21 +62,26 @@
 		</table>
 	<a href="board-b_list.do"><input type="button" value="돌아가기"></a>
 	<a href="board-b_reply.do?b_idx=${board.b_idx}"><input type="button" value="답글"></a>
+	</form>
 	<h3>댓글 리스트</h3>
 		<hr>
 	  	<c:forEach items="${comment}" var="comment">
+	  	<hr>
 			${comment.user.u_id }<br>
+		<c:forEach begin="1" end="${comment.c_depth}">&nbsp;</c:forEach>
+		<c:if test="${comment.c_depth !=0}">ㄴ</c:if>
 			${comment.c_content }<br>
 			${comment.c_date }<br>
+			
+		<form action="c_delete.do" method="post">
+			<input type="hidden" name="b_idx" value="${board.b_idx }">
+			<input type="hidden" name="c_idx" value="${comment.c_idx }">
+			<input type="submit" value="삭제">
+		</form>
+		<a href="board-c_reComment.do?c_idx=${comment.c_idx}"><input type="button" value="대댓글"></a>
 		</c:forEach>	
-	</form>
-	<h3>댓글 달기</h3> 
-	
-		<div>작성자 : ${sessionScope.user.u_name }
-		
-			<textarea rows="5" cols="50" name="content"></textarea>
-			<input type="submit" value="글등록">
-		</div>
+		<hr>
+
 	<form action="c_comment.do" name="comment" method="post">
 	<h3>댓글 달기</h3> 
 	<input type="hidden" name="b_idx" value="${board.b_idx}"> 

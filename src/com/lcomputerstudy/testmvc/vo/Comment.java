@@ -8,7 +8,28 @@ public class Comment {
 	private String c_date;
 	private User user;
 	private Board board;
+	private int c_group;
+	private int c_order;
+	private int c_depth;
 	
+	public int getC_group() {
+		return c_group;
+	}
+	public void setC_group(int c_group) {
+		this.c_group = c_group;
+	}
+	public int getC_order() {
+		return c_order;
+	}
+	public void setC_order(int c_order) {
+		this.c_order = c_order;
+	}
+	public int getC_depth() {
+		return c_depth;
+	}
+	public void setC_depth(int c_depth) {
+		this.c_depth = c_depth;
+	}
 	public Board getBoard() {
 		return board;
 	}

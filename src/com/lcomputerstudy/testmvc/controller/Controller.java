@@ -41,8 +41,10 @@ public class Controller extends HttpServlet {
 		Board board = null;
 		Board boardParent = null;
 		Comment comment = null;
+		Comment commentParent = null;
 		int uIdx = 0;
 		int bIdx = 0;
+		int cIdx = 0;
 		int usercount = 0;
 		int page = 1;
 		HttpSession session = null;
@@ -169,7 +171,6 @@ public class Controller extends HttpServlet {
 				board.setB_title(request.getParameter("title"));
 				board.setB_content(request.getParameter("content"));
 				board.setU_idx(user.getU_idx());
-		//		board.setU_idx(Integer.parseInt(request.getParameter("user")));
 				board.setB_date(request.getParameter("date"));
 				board.setB_view(request.getParameter("view"));
 				
@@ -183,8 +184,6 @@ public class Controller extends HttpServlet {
 				boardService = BoardService.getInstance();
 				board = boardService.detailBoard(bIdx);
 				List<Comment> clist = boardService.getComments(bIdx);
-			//	boardService = BoardService.getInstance();
-			//	List<Board> clist = boardService.getCom(bIdx);
 				
 				request.setAttribute("board", board);
 				request.setAttribute("comment", clist);
@@ -238,7 +237,6 @@ public class Controller extends HttpServlet {
 				board.setB_title(request.getParameter("title"));
 				board.setB_content(request.getParameter("content"));
 				board.setU_idx(user.getU_idx());
-		//		board.setU_idx(Integer.parseInt(request.getParameter("user")));
 				board.setB_group(boardParent.getB_group());
 				board.setB_order(boardParent.getB_order());
 				board.setB_depth(boardParent.getB_depth());
@@ -252,11 +250,6 @@ public class Controller extends HttpServlet {
 				session = request.getSession();
 				user = (User)session.getAttribute("user");
 				
-			//	bIdx = Integer.parseInt(request.getParameter("b_idx"));
-				
-			//	boardService = BoardService.getInstance();
-		//	commentParent = boardService.getComment(bIdx);
-				
 				comment = new Comment();
 				comment.setC_content(request.getParameter("content"));
 				comment.setU_idx(user.getU_idx());
@@ -266,7 +259,55 @@ public class Controller extends HttpServlet {
 				boardService = BoardService.getInstance();
 				boardService.insertComment(comment);
 						
-			//	view = "board/b_detail";
+				String redirectURL = request.getContextPath() + "/board-b_detail.do?b_idx=" + comment.getB_idx();
+				response.sendRedirect(redirectURL);
+				return;
+			case "/c_delete.do":
+				comment = new Comment();
+				comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
+				cIdx = Integer.parseInt(request.getParameter("c_idx"));
+				boardService = BoardService.getInstance();
+				boardService.deleteComment(cIdx);
+				
+				redirectURL = request.getContextPath() + "/board-b_detail.do?b_idx=" + comment.getB_idx();
+				response.sendRedirect(redirectURL);
+				return;
+			case "/board-c_reComment.do":
+				request.setAttribute("c_idx", request.getParameter("c_idx"));
+				view = "board/c_reply";
+				break;
+			case "/c_reComment-process.do":
+				session = request.getSession();
+				user = (User)session.getAttribute("user");
+				
+				session = request.getSession();
+				board = (Board)session.getAttribute("board");
+				
+				cIdx = Integer.parseInt(request.getParameter("c_idx"));
+				
+				boardService = BoardService.getInstance();
+				commentParent = boardService.getComment(cIdx);
+				
+				comment = new Comment();
+				comment.setC_content(request.getParameter("content"));
+				comment.setU_idx(user.getU_idx());
+				comment.setB_idx(board.getB_idx());
+		//		comment.setB_idx(bIdx);
+		//		comment.setB_idx(commentParent.getB_idx());
+		//		comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
+				comment.setC_idx(Integer.parseInt(request.getParameter("c_idx")));
+				comment.setC_date(request.getParameter("date"));
+				comment.setC_group(commentParent.getC_group());
+				comment.setC_order(commentParent.getC_order());
+				comment.setC_depth(commentParent.getC_depth());
+
+				boardService = BoardService.getInstance();
+				boardService.reComment(comment);
+				
+		//		redirectURL = request.getContextPath() + "/board-b_detail.do?b_idx=" + comment.getB_idx() + "#comment-" + cIdx;
+		//		response.sendRedirect(redirectURL);
+		//		return;
+				view = "board/b_insert-result";
 				break;
 		}
 		
