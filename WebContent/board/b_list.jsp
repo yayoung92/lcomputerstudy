@@ -84,7 +84,7 @@
 	
 		<c:forEach items="${b_list}" var="board">
 			<tr>
-				<td><a href="board-b_detail.do?b_idx=${board.b_idx}">${board.b_idx}</a></td>
+				<td><a href="board-b_detail2.do?b_idx=${board.b_idx}">${board.b_idx}</a></td>
 				<td>
 				<c:forEach begin="1" end="${board.b_depth}">&nbsp;</c:forEach>
 				<c:if test="${board.b_depth !=0}">ㄴ</c:if>${board.b_title}</td>

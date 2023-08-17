@@ -304,46 +304,46 @@ public class BoardDAO {
 		PreparedStatement pstmt = null;
 		Connection conn = null;
 		ResultSet rs = null;
-		ArrayList<Board> list = null;
 		Comment comment = null;
 		Board board = null;
 		User user = null;
 		
 		try {
 			conn = DBConnection.getConnection();
-	//		String query = "select * from `comment` join board on board.b_idx = `comment`.b_idx join user on user.u_idx = `comment`.u_idx where `comment`.b_idx=?";
 			String query = new StringBuilder()
-					.append("SELECT		* ")
-					.append("FROM		board ta")
-					.append("LEFT JOIN	user tb ON ta.u_idx = tb.u_idx")
-					.append("LEFT JOIN	`comment` tc ON ta.b_idx = tc.b_idx")
-					.append("LEFT JOIN 	user td ON tc.u_idx = td.u_idx")
-					.append("WHERE		ta.b_idx=?")
-					.toString();
-	//		String query = "select * from `comment` t left join user b t.u_idx = b.u_idx where t.b_idx";
+					 .append("SELECT      * ")
+				     .append("FROM        board ta ")
+				     .append("LEFT JOIN   user tb ON ta.u_idx = tb.u_idx ")
+			         .append("LEFT JOIN   `comment` tc ON ta.b_idx = tc.b_idx ")
+			         .append("LEFT JOIN   user td ON tc.u_idx = td.u_idx ")
+		  	         .append("WHERE       ta.b_idx = ?")
+		 	         .toString();
 			pstmt = conn.prepareStatement(query);
 			pstmt.setInt(1, bIdx);
 			rs = pstmt.executeQuery();
-			list = new ArrayList<Board>();
 
 			int tmpBIdx = 0;
 			List<Comment> commentList = null;
 			
 	        while(rs.next()){
-	        	if (board.getB_idx() != tmpBIdx) {
-	        		commentList = new ArrayList<>();
+	        	commentList = new ArrayList<>();
+	        	if (board == null || board.getB_idx() != tmpBIdx) {
+	        //		if(board != null) {
+	     //   			board.setCommentList(commentList);
+	     //   		}
+	        		
 	        		board = new Board();
+	        		user = new User();
 	        		tmpBIdx = rs.getInt("b_idx");
+	        		
 		        	board.setB_idx(tmpBIdx);
 		        	board.setB_title(rs.getString("b_title"));
 			    	board.setB_content(rs.getString("b_content"));
 			    	board.setB_date(rs.getString("b_date"));
-		        	
-		        	user = new User();
-		        	user.setU_id(rs.getString("tb.u_id"));
+
+		        	user.setU_id(rs.getString("user.u_id"));
 			    	board.setUser(user);
 	        	}
-
 	        	comment = new Comment();
 		    	comment.setC_idx(rs.getInt("c_idx"));
 	        	comment.setC_content(rs.getString("c_content"));
@@ -352,9 +352,10 @@ public class BoardDAO {
        	       	comment.setC_order(rs.getInt("c_order"));
        	       	comment.setC_depth(rs.getInt("c_depth"));
        	       	commentList.add(comment);
-       	       	
-       	       	board.setCommentList(commentList);
 	        }
+	  //      if(board != null) {
+	        	board.setCommentList(commentList);
+	  //      }
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -441,8 +442,8 @@ public class BoardDAO {
 			pstmt.setInt(2, comment.getB_idx());
 			pstmt.setInt(3, comment.getU_idx());
 			pstmt.setInt(4, comment.getC_group());
-			pstmt.setInt(5, comment.getC_order());
-			pstmt.setInt(6, comment.getC_depth());
+			pstmt.setInt(5, comment.getC_order()+1);
+			pstmt.setInt(6, comment.getC_depth()+1);
 			pstmt.executeUpdate();
 			
 		} catch(Exception e) {
@@ -460,25 +461,21 @@ public class BoardDAO {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		Board board = null;
 		User user = null;
 		Comment comment = null;
 		
 		try {
 			conn = DBConnection.getConnection();
-	        String query = "select * from `comment` join user on user.u_idx = `comment`.u_idx join board on board.b_idx = `comment`.b_idx where c_idx=?";
+	        String query = "select * from `comment` left join user on user.u_idx = `comment`.u_idx left join board on board.b_idx = `comment`.b_idx where c_idx=?";
 	  	 	pstmt = conn.prepareStatement(query);
 		   	pstmt.setInt(1, cIdx);
 	    	rs = pstmt.executeQuery();
 	
 	    	while(rs.next()){
-	    		board = new Board();
 	    		user = new User();
 	    		comment = new Comment();
-	    		
-	    		board.setB_idx(rs.getInt("board.b_idx"));
-	    		comment.setBoard(board);
-	  
+
+	    		comment.setB_idx(rs.getInt("b_idx"));
 	    		comment.setC_content(rs.getString("c_content"));
 	    		
 	    		user.setU_id(rs.getString("user.u_id"));

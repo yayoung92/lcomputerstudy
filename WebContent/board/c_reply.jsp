@@ -9,17 +9,13 @@
 </head>
 <body>
 	<h3>대댓글 달기</h3>
-	<form action="c_reComment-process.do" name="comment" method="post">
+	<form action="c_reComment-process.do" method="post">
 		<input type="hidden" name="c_idx" value="${c_idx}"> 
-		<input type="hidden" name="b_idx" value="${seesionScope.board.b_idx}"> 
+
 		<table>
 			<tr>
-				<td>제목 </td>
-					<td><input type="text" name="title" value="[대댓글]" size="60"></td>
-				</tr>
-			<tr>
 				<td>내용 </td>
-				<td><textarea rows="5" cols="50" name="content" ></textarea>
+				<td><textarea rows="5" cols="50" name="content" >[대댓글]</textarea>
 			</td>
 			</tr>
 		  	<tr>

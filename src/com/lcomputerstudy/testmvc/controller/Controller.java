@@ -179,6 +179,19 @@ public class Controller extends HttpServlet {
 						
 				view = "board/b_insert-result";
 				break;
+				
+				
+////// 상세페이지 db board 로 연결해서 한번에 가져오기.		//////
+			case "/board-b_detail2.do":
+				bIdx = Integer.parseInt(request.getParameter("b_idx"));
+				boardService = BoardService.getInstance();
+				board = boardService.getCom(bIdx);
+				
+				request.setAttribute("board", board);
+				view = "board/b_detail2";
+				break;
+				
+				
 			case "/board-b_detail.do":
 				bIdx = Integer.parseInt(request.getParameter("b_idx"));
 				boardService = BoardService.getInstance();
@@ -280,22 +293,16 @@ public class Controller extends HttpServlet {
 				session = request.getSession();
 				user = (User)session.getAttribute("user");
 				
-				session = request.getSession();
-				board = (Board)session.getAttribute("board");
-				
 				cIdx = Integer.parseInt(request.getParameter("c_idx"));
 				
 				boardService = BoardService.getInstance();
 				commentParent = boardService.getComment(cIdx);
+				bIdx = commentParent.getB_idx();
 				
 				comment = new Comment();
 				comment.setC_content(request.getParameter("content"));
 				comment.setU_idx(user.getU_idx());
-				comment.setB_idx(board.getB_idx());
-		//		comment.setB_idx(bIdx);
-		//		comment.setB_idx(commentParent.getB_idx());
-		//		comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
-				comment.setC_idx(Integer.parseInt(request.getParameter("c_idx")));
+				comment.setB_idx(bIdx);
 				comment.setC_date(request.getParameter("date"));
 				comment.setC_group(commentParent.getC_group());
 				comment.setC_order(commentParent.getC_order());
@@ -304,11 +311,9 @@ public class Controller extends HttpServlet {
 				boardService = BoardService.getInstance();
 				boardService.reComment(comment);
 				
-		//		redirectURL = request.getContextPath() + "/board-b_detail.do?b_idx=" + comment.getB_idx() + "#comment-" + cIdx;
-		//		response.sendRedirect(redirectURL);
-		//		return;
-				view = "board/b_insert-result";
-				break;
+				redirectURL = request.getContextPath() + "/board-b_detail.do?b_idx=" + comment.getB_idx();
+				response.sendRedirect(redirectURL);
+				return;
 		}
 		
 		RequestDispatcher rd = request.getRequestDispatcher(view + ".jsp");
