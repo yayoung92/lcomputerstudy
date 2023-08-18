@@ -191,7 +191,7 @@ public class Controller extends HttpServlet {
 				view = "board/b_detail2";
 				break;
 				
-				
+	////////////////////			
 			case "/board-b_detail.do":
 				bIdx = Integer.parseInt(request.getParameter("b_idx"));
 				boardService = BoardService.getInstance();

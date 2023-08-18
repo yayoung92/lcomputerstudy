@@ -7,6 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <title>게시글 상세</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 </head>
 <style>
 	table {
@@ -63,22 +64,24 @@
 		</table>
 	<a href="board-b_list.do"><input type="button" value="돌아가기"></a>
 	<a href="board-b_reply.do?b_idx=${board.b_idx}"><input type="button" value="답글"></a>
-
+	</form>
 	<h3>댓글 리스트</h3>
 		<hr>
+	  	<c:forEach items="${board.commentList}" var="comment">
 	  	<hr>
-			${board.user.u_id }<br>
-		<c:forEach begin="1" end="${board.c_depth}">&nbsp;</c:forEach>
+			${comment.user.u_id}<br>
+		<c:forEach begin="1" end="${comment.c_depth}">&nbsp;</c:forEach>
 		<c:if test="${comment.c_depth !=0}">ㄴ</c:if>
 			${comment.c_content }<br>
 			${comment.c_date }<br>
-	</form>
+	
 		<form action="c_delete.do" method="post">
 			<input type="hidden" name="b_idx" value="${board.b_idx }">
 			<input type="hidden" name="c_idx" value="${comment.c_idx }">
 			<input type="submit" value="삭제">
 			<a href="board-c_reComment.do?c_idx=${comment.c_idx}"><input type="button" value="대댓글"></a>
 		</form>	
+		</c:forEach>
 		<hr>
 
 	<form action="c_comment.do" name="comment" method="post">

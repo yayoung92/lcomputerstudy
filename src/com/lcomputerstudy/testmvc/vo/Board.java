@@ -10,11 +10,18 @@ public class Board {
 	private String b_date;
 	private int u_idx;
 	private User user;
+	private Comment comment;
+	
+	public Comment getComment() {
+		return comment;
+	}
+	public void setComment(Comment comment) {
+		this.comment = comment;
+	}
 	private int b_group;
 	private int b_order;
 	private int b_depth;
 	private List<Comment> commentList;
-	
 	
 	public List<Comment> getCommentList() {
 		return commentList;

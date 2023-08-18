@@ -307,6 +307,7 @@ public class BoardDAO {
 		Comment comment = null;
 		Board board = null;
 		User user = null;
+		List<Comment> commentList = null;
 		
 		try {
 			conn = DBConnection.getConnection();
@@ -323,15 +324,12 @@ public class BoardDAO {
 			rs = pstmt.executeQuery();
 
 			int tmpBIdx = 0;
-			List<Comment> commentList = null;
+			commentList = new ArrayList<>();
 			
 	        while(rs.next()){
-	        	commentList = new ArrayList<>();
+
 	        	if (board == null || board.getB_idx() != tmpBIdx) {
-	        //		if(board != null) {
-	     //   			board.setCommentList(commentList);
-	     //   		}
-	        		
+
 	        		board = new Board();
 	        		user = new User();
 	        		tmpBIdx = rs.getInt("b_idx");
@@ -340,22 +338,31 @@ public class BoardDAO {
 		        	board.setB_title(rs.getString("b_title"));
 			    	board.setB_content(rs.getString("b_content"));
 			    	board.setB_date(rs.getString("b_date"));
-
-		        	user.setU_id(rs.getString("user.u_id"));
+			    		
+		        	user.setU_id(rs.getString("tb.u_id"));
 			    	board.setUser(user);
+			    	
 	        	}
+	        	
 	        	comment = new Comment();
-		    	comment.setC_idx(rs.getInt("c_idx"));
-	        	comment.setC_content(rs.getString("c_content"));
-       	       	comment.setC_date(rs.getString("c_date"));
-       	       	comment.setC_group(rs.getInt("c_group"));
-       	       	comment.setC_order(rs.getInt("c_order"));
-       	       	comment.setC_depth(rs.getInt("c_depth"));
+	        	user = new User();
+	        	comment.setC_idx(rs.getInt("c_idx"));
+	        	comment.setB_idx(rs.getInt("b_idx"));
+	    		comment.setC_content(rs.getString("c_content"));
+	    		
+	    		user.setU_id(rs.getString("td.u_id"));
+	    		comment.setUser(user);
+	    		
+	    		comment.setC_date(rs.getString("c_date"));
+	    		comment.setC_group(rs.getInt("c_group"));
+	    		comment.setC_order(rs.getInt("c_order"));
+	    		comment.setC_depth(rs.getInt("c_depth"));
+       	       	
        	       	commentList.add(comment);
 	        }
-	  //      if(board != null) {
-	        	board.setCommentList(commentList);
-	  //      }
+	        
+	        board.setCommentList(commentList);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
