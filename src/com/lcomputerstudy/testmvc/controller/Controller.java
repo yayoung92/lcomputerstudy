@@ -289,6 +289,16 @@ public class Controller extends HttpServlet {
 				request.setAttribute("c_idx", request.getParameter("c_idx"));
 				view = "board/c_reply";
 				break;
+			case "/aj-comment-update.do":
+				comment = new Comment();
+				comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
+				comment.setC_idx(Integer.parseInt(request.getParameter("c_idx")));
+				comment.setC_content(request.getParameter("edit_b_content"));
+				comment.setC_date(request.getParameter("edit_b_date"));
+				
+				boardService = BoardService.getInstance();
+				boardService.editComment(comment);
+				break;
 			case "/c_reComment-process.do":
 				session = request.getSession();
 				user = (User)session.getAttribute("user");

@@ -497,6 +497,29 @@ public class BoardDAO {
     	}
 		return comment;
 	}
+	public void editComment(Comment comment) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+			
+		try {
+			conn = DBConnection.getConnection();
+			String sql = "update `comment` set b_title = ?, b_content = ?, b_date = now() where b_idx=?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, comment.getB_title());
+			pstmt.setString(2, comment.getB_content());
+			pstmt.setInt(3, comment.getB_idx());
+			pstmt.executeUpdate();
+		} catch( Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstmt != null) pstmt.close();
+				if (conn != null) conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }
 
 

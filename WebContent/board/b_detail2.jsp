@@ -68,19 +68,41 @@
 	<h3>댓글 리스트</h3>
 		<hr>
 	  	<c:forEach items="${board.commentList}" var="comment">
-	  	<hr>
-			${comment.user.u_id}<br>
-		<c:forEach begin="1" end="${comment.c_depth}">&nbsp;</c:forEach>
-		<c:if test="${comment.c_depth !=0}">ㄴ</c:if>
-			${comment.c_content }<br>
-			${comment.c_date }<br>
-	
-		<form action="c_delete.do" method="post">
-			<input type="hidden" name="b_idx" value="${board.b_idx }">
-			<input type="hidden" name="c_idx" value="${comment.c_idx }">
-			<input type="submit" value="삭제">
-			<a href="board-c_reComment.do?c_idx=${comment.c_idx}"><input type="button" value="대댓글"></a>
-		</form>	
+	  	<div class="commentList">
+		  	<hr>
+				${comment.user.u_id}<br>
+			<c:forEach begin="1" end="${comment.c_depth}">&nbsp;</c:forEach>
+			<c:if test="${comment.c_depth !=0}">ㄴ</c:if>
+				${comment.c_content }<br>
+				${comment.c_date }<br>
+		</div>
+		<div>
+			<form action="c_delete.do" method="post">
+				<input type="hidden" name="b_idx" value="${board.b_idx }">
+				<input type="hidden" name="c_idx" value="${comment.c_idx }">
+				<input type="submit" value="삭제">
+				<a href="board-c_reComment.do?c_idx=${comment.c_idx}"><input type="button" value="대댓글"></a>
+				<button type="button" class="reEdit">수정</button>
+				<button type="button" class="reReply">대댓글</button>
+			</form>
+		</div>
+		<div style="display: none;">
+			<textarea rows="2" cols="80"></textarea>
+			<button type="button" class="reInsert" cidx2="${comment.c_idx}">등록</button>
+			<button type="button" class="reDelete">취소</button>
+		</div>
+		<div style="display: none;">
+			<textarea rows="2" cols="80">${comment.c_content }</textarea>
+			<button type="button" class="reInsert" cidx="${comment.c_idx}">수정완료</button>
+			<button type="button" class="reDelete">취소</button>
+		</div>
+	<!--	<div id="commentList">
+			<ul>
+				<li>${comment.user.u_id}</li>
+				<li>${comment.c_content }</li>
+				<li>${comment.c_date }</li>
+			</ul>
+		</div> -->
 		</c:forEach>
 		<hr>
 
@@ -94,5 +116,54 @@
 		</div>
 
 	</form>
+<script>
+$(document).on('click', '.reInsert', function () {
+	let cIdx = $(this).attr('cidx');
+	let comment = $(this).prev().val();
+	
+	$.ajax({
+		method: "POST",
+		url: "aj-comment-update.do",
+		data: { c_idx: cIdx, c_comment: comment }
+	})
+	.done(function( msg ) {
+		alert( "Data Saved: " + msg );
+	});
+});
+/*$(document).on('click', '.reInsert', function () {
+	
+	let comment = $(this).prev().val();
+});*/
+$(document).on('click', '.reReply', function () {
+	$(this).parent().parent().next().css('display', '');
+	let cIdx = $(this).attr('cidx2');
+	let comment = taxtarea.val();
+	
+	$.ajax({
+		method: "POST",
+		url: "aj-comment-update.do",
+		data: { c_idx: cIdx, c_comment: comment }
+	})
+	.done(function( msg ) {
+		alert( "Data Saved: " + msg );
+	});
+});
+$(document).on('click', '.reDelete', function() {
+	$(this).parent().toggle();
+});
+$(document).on('click', '.reInsert', function() {
+	 var textarea = $(this).prev("textarea");
+     var content = textarea.val();
+     if (content.trim() === "") {
+         alert("대댓글 내용을 입력하세요.");
+         return;
+     };
+});
+$(document).on('click', '.reEdit', function() {
+	 /*var editForm = $(this).parent().parent().prev();
+	 var content = "${comment.c_content }";*/
+	 $(this).parent().parent().next().next().css('display', '');
+});
+</script>
 </body>
 </html>
