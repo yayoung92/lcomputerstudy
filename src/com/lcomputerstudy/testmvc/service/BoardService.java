@@ -63,6 +63,9 @@ public class BoardService {
 	public Comment getComment(int cIdx) {
 		return dao.getComment(cIdx);
 	}
+	public void ajeditComment(Comment comment) {
+		dao.ajeditComment(comment);
+	}
 }
 
 

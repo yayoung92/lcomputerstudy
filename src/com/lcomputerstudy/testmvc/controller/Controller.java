@@ -188,6 +188,7 @@ public class Controller extends HttpServlet {
 				board = boardService.getCom(bIdx);
 				
 				request.setAttribute("board", board);
+				boardService.boardViews(bIdx);
 				view = "board/b_detail2";
 				break;
 				
@@ -272,7 +273,7 @@ public class Controller extends HttpServlet {
 				boardService = BoardService.getInstance();
 				boardService.insertComment(comment);
 						
-				String redirectURL = request.getContextPath() + "/board-b_detail.do?b_idx=" + comment.getB_idx();
+				String redirectURL = request.getContextPath() + "/board-b_detail2.do?b_idx=" + comment.getB_idx();
 				response.sendRedirect(redirectURL);
 				return;
 			case "/c_delete.do":
@@ -282,22 +283,12 @@ public class Controller extends HttpServlet {
 				boardService = BoardService.getInstance();
 				boardService.deleteComment(cIdx);
 				
-				redirectURL = request.getContextPath() + "/board-b_detail.do?b_idx=" + comment.getB_idx();
+				redirectURL = request.getContextPath() + "/board-b_detail2.do?b_idx=" + comment.getB_idx();
 				response.sendRedirect(redirectURL);
 				return;
 			case "/board-c_reComment.do":
 				request.setAttribute("c_idx", request.getParameter("c_idx"));
 				view = "board/c_reply";
-				break;
-			case "/aj-comment-update.do":
-				comment = new Comment();
-				comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
-				comment.setC_idx(Integer.parseInt(request.getParameter("c_idx")));
-				comment.setC_content(request.getParameter("edit_b_content"));
-				comment.setC_date(request.getParameter("edit_b_date"));
-				
-				boardService = BoardService.getInstance();
-				boardService.editComment(comment);
 				break;
 			case "/c_reComment-process.do":
 				session = request.getSession();
@@ -321,9 +312,52 @@ public class Controller extends HttpServlet {
 				boardService = BoardService.getInstance();
 				boardService.reComment(comment);
 				
-				redirectURL = request.getContextPath() + "/board-b_detail.do?b_idx=" + comment.getB_idx();
+				redirectURL = request.getContextPath() + "/board-b_detail2.do?b_idx=" + comment.getB_idx();
 				response.sendRedirect(redirectURL);
 				return;
+			case "/aj-comment-update.do":
+				comment = new Comment();
+				comment.setC_idx(Integer.parseInt(request.getParameter("c_idx")));
+				comment.setC_content(request.getParameter("c_content"));
+				
+				boardService = BoardService.getInstance();
+				boardService.ajeditComment(comment);
+				
+				bIdx = Integer.parseInt(request.getParameter("b_idx"));
+				boardService = BoardService.getInstance();
+				clist = boardService.getComments(bIdx);
+				
+				request.setAttribute("comment", clist);
+				view = "board/c_list";
+				break;
+			case "/aj-comment-reReply.do":
+				session = request.getSession();
+				user = (User)session.getAttribute("user");
+				
+				cIdx = Integer.parseInt(request.getParameter("c_idx"));
+				
+				boardService = BoardService.getInstance();
+				commentParent = boardService.getComment(cIdx);
+				
+				comment = new Comment();
+				comment.setC_content(request.getParameter("c_content"));
+				comment.setU_idx(user.getU_idx());
+				comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
+				comment.setC_group(commentParent.getC_group());
+				comment.setC_order(commentParent.getC_order());
+				comment.setC_depth(commentParent.getC_depth());
+
+				boardService = BoardService.getInstance();
+				boardService.reComment(comment);
+				break;
+			case "/aj-comment-delete.do":
+				comment = new Comment();
+				comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
+				cIdx = Integer.parseInt(request.getParameter("c_idx"));
+				boardService = BoardService.getInstance();
+				boardService.deleteComment(cIdx);
+			
+				break;
 		}
 		
 		RequestDispatcher rd = request.getRequestDispatcher(view + ".jsp");

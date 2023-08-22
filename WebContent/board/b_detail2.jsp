@@ -66,7 +66,9 @@
 	<a href="board-b_reply.do?b_idx=${board.b_idx}"><input type="button" value="답글"></a>
 	</form>
 	<h3>댓글 리스트</h3>
-		<hr>
+	
+	<hr>
+	<div id="commentList">
 	  	<c:forEach items="${board.commentList}" var="comment">
 	  	<div class="commentList">
 		  	<hr>
@@ -81,30 +83,25 @@
 				<input type="hidden" name="b_idx" value="${board.b_idx }">
 				<input type="hidden" name="c_idx" value="${comment.c_idx }">
 				<input type="submit" value="삭제">
-				<a href="board-c_reComment.do?c_idx=${comment.c_idx}"><input type="button" value="대댓글"></a>
+		<!--  	<a href="board-c_reComment.do?c_idx=${comment.c_idx}"><input type="button" value="대댓글"></a> -->
 				<button type="button" class="reEdit">수정</button>
 				<button type="button" class="reReply">대댓글</button>
 			</form>
 		</div>
 		<div style="display: none;">
 			<textarea rows="2" cols="80"></textarea>
-			<button type="button" class="reInsert" cidx2="${comment.c_idx}">등록</button>
+			<button type="button" class="reReInsert" cidx="${comment.c_idx}" bidx="${board.b_idx }">등록</button>
 			<button type="button" class="reDelete">취소</button>
 		</div>
 		<div style="display: none;">
 			<textarea rows="2" cols="80">${comment.c_content }</textarea>
-			<button type="button" class="reInsert" cidx="${comment.c_idx}">수정완료</button>
+			<button type="button" class="reInsert" cidx="${comment.c_idx}" bidx="${board.b_idx }">수정완료</button>
 			<button type="button" class="reDelete">취소</button>
 		</div>
-	<!--	<div id="commentList">
-			<ul>
-				<li>${comment.user.u_id}</li>
-				<li>${comment.c_content }</li>
-				<li>${comment.c_date }</li>
-			</ul>
-		</div> -->
 		</c:forEach>
-		<hr>
+	</div>
+	<hr>
+	
 
 	<form action="c_comment.do" name="comment" method="post">
 	<h3>댓글 달기</h3> 
@@ -117,52 +114,54 @@
 
 	</form>
 <script>
-$(document).on('click', '.reInsert', function () {
+$(document).on('click', '.reEdit', function() {      // 수정값 가져오기
+	 $(this).parent().parent().next().next().css('display', '');
+});
+$(document).on('click', '.reInsert', function () {   // 수정값 넘기기
 	let cIdx = $(this).attr('cidx');
 	let comment = $(this).prev().val();
-	
+	let bIdx = $(this).attr('bidx');
+	console.log('asdfasdf');
 	$.ajax({
 		method: "POST",
 		url: "aj-comment-update.do",
-		data: { c_idx: cIdx, c_comment: comment }
+		data: { c_idx: cIdx, c_content: comment, b_idx: bIdx }
 	})
 	.done(function( msg ) {
 		alert( "Data Saved: " + msg );
+		$('#commentList').html(msg);
 	});
+	console.log('2234234');
+	//window.location.href="board-b_detail2.do?b_idx=" + bIdx;
 });
-/*$(document).on('click', '.reInsert', function () {
-	
-	let comment = $(this).prev().val();
-});*/
-$(document).on('click', '.reReply', function () {
+$(document).on('click', '.reReply', function () {		// 대댓글 열기
 	$(this).parent().parent().next().css('display', '');
-	let cIdx = $(this).attr('cidx2');
-	let comment = taxtarea.val();
+});
+$(document).on('click', '.reReInsert', function () {		// 대댓글 AJAX 로 넘기기
+	let cIdx = $(this).attr('cidx');
+	let comment = $(this).prev("textarea").val();
+	let bIdx = $(this).attr('bidx');
 	
 	$.ajax({
 		method: "POST",
-		url: "aj-comment-update.do",
-		data: { c_idx: cIdx, c_comment: comment }
+		url: "aj-comment-reReply.do",
+		data: { c_idx: cIdx, c_content: comment, b_idx: bIdx }
 	})
 	.done(function( msg ) {
 		alert( "Data Saved: " + msg );
 	});
+	window.location.href="board-b_detail2.do?b_idx=" + bIdx;
 });
-$(document).on('click', '.reDelete', function() {
+$(document).on('click', '.reReInsert', function() {		// 대댓글 빈 값으로 넘기려면 대댓글 작성 하라는 문구
+	var textarea = $(this).prev("textarea");
+    var content = textarea.val();
+    if (content.trim() === "") {
+        alert("대댓글 내용을 입력하세요.");
+        return;
+    };
+});
+$(document).on('click', '.reDelete', function() {		// 댓글, 대댓글 취소 시 창 닫기
 	$(this).parent().toggle();
-});
-$(document).on('click', '.reInsert', function() {
-	 var textarea = $(this).prev("textarea");
-     var content = textarea.val();
-     if (content.trim() === "") {
-         alert("대댓글 내용을 입력하세요.");
-         return;
-     };
-});
-$(document).on('click', '.reEdit', function() {
-	 /*var editForm = $(this).parent().parent().prev();
-	 var content = "${comment.c_content }";*/
-	 $(this).parent().parent().next().next().css('display', '');
 });
 </script>
 </body>

@@ -497,17 +497,16 @@ public class BoardDAO {
     	}
 		return comment;
 	}
-	public void editComment(Comment comment) {
+	public void ajeditComment(Comment comment) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 			
 		try {
 			conn = DBConnection.getConnection();
-			String sql = "update `comment` set b_title = ?, b_content = ?, b_date = now() where b_idx=?";
+			String sql = "update `comment` set c_content = ?, c_date = now() where c_idx=?";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, comment.getB_title());
-			pstmt.setString(2, comment.getB_content());
-			pstmt.setInt(3, comment.getB_idx());
+			pstmt.setString(1, comment.getC_content());
+			pstmt.setInt(2, comment.getC_idx());
 			pstmt.executeUpdate();
 		} catch( Exception e) {
 			e.printStackTrace();
