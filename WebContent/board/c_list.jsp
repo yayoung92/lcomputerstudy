@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:forEach items="${comment}" var="comment">
+<c:forEach items="${board.commentList}" var="comment">
 <div class="commentList">
 	<hr>
 		${comment.user.u_id}<br>
@@ -11,13 +11,9 @@
 		${comment.c_date }<br>
 	</div>
 	<div>
-		<form action="c_delete.do" method="post">
-			<input type="hidden" name="b_idx" value="${board.b_idx }">
-			<input type="hidden" name="c_idx" value="${comment.c_idx }">
-			<input type="submit" value="삭제">
-			<button type="button" class="reEdit">수정</button>
-			<button type="button" class="reReply">대댓글</button>
-		</form>
+		<button type="button" class="reReDelete" cidx="${comment.c_idx }" bidx="${board.b_idx }">삭제</button>
+		<button type="button" class="reEdit">수정</button>
+		<button type="button" class="reReply">대댓글</button>
 	</div>
 	<div style="display: none;">
 		<textarea rows="2" cols="80"></textarea>

@@ -7,6 +7,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>게시판</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 </head>
 <style>
 	h1 {
@@ -63,6 +64,19 @@
 </style>
 <body>
 	<h1>무엇이든 적어보자 y게시판y 찡긋 </h1>
+	<div style="text-align:center;">
+		<form action="board-b_list.do" method="post">
+			<select name="keyWord">
+				<option value="title">제목</option>
+				<option value="title&content">제목+내용</option>
+				<option value="content">내용</option>
+				<option value="u_id">작성자</option>
+			</select>
+			<input type="text" placeholder ="검색어 입력" name="search" id="keywordInput" value="${search}">
+			<button id="searchBtn" type="button">검색</button>
+			<input type="submit" value="검색">
+		</form>
+	</div>
 	<table style="text-align:center;">
 		<col width="50px">
 		<col width="150px">
@@ -82,7 +96,7 @@
 				
 			</tr>
 	
-		<c:forEach items="${b_list}" var="board">
+		<c:forEach items="${b_list }" var="board">
 			<tr>
 				<td><a href="board-b_detail2.do?b_idx=${board.b_idx}">${board.b_idx}</a></td>
 				<td>
@@ -99,6 +113,13 @@
 	<div class="button-container">
 	    <a class="custom-button" href="board-b_insert.do" role="button">글쓰기</a>
 	 </div>
-	
+<script>
+$(document).on('click', '.searchBtn', function() {
+	var url = document.location.href;
+	url = url + "?keyWord="+$("#searchBtn").val();
+	url = url + "&keyword="+$("#keywordInput").val();
+	location.href= url;
+});
+</script>
 </body>
 </html>

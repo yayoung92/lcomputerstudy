@@ -79,14 +79,10 @@
 				${comment.c_date }<br>
 		</div>
 		<div>
-			<form action="c_delete.do" method="post">
-				<input type="hidden" name="b_idx" value="${board.b_idx }">
-				<input type="hidden" name="c_idx" value="${comment.c_idx }">
-				<input type="submit" value="삭제">
-		<!--  	<a href="board-c_reComment.do?c_idx=${comment.c_idx}"><input type="button" value="대댓글"></a> -->
-				<button type="button" class="reEdit">수정</button>
-				<button type="button" class="reReply">대댓글</button>
-			</form>
+			<button type="button" class="reReDelete" cidx="${comment.c_idx }" bidx="${board.b_idx }">삭제</button>
+			<button type="button" class="reEdit">수정</button>
+			<button type="button" class="reReply">대댓글</button>
+		
 		</div>
 		<div style="display: none;">
 			<textarea rows="2" cols="80"></textarea>
@@ -115,27 +111,24 @@
 	</form>
 <script>
 $(document).on('click', '.reEdit', function() {      // 수정값 가져오기
-	 $(this).parent().parent().next().next().css('display', '');
+	 $(this).parent().next().next().css('display', '');
 });
 $(document).on('click', '.reInsert', function () {   // 수정값 넘기기
 	let cIdx = $(this).attr('cidx');
 	let comment = $(this).prev().val();
 	let bIdx = $(this).attr('bidx');
-	console.log('asdfasdf');
+
 	$.ajax({
 		method: "POST",
 		url: "aj-comment-update.do",
 		data: { c_idx: cIdx, c_content: comment, b_idx: bIdx }
 	})
 	.done(function( msg ) {
-		alert( "Data Saved: " + msg );
 		$('#commentList').html(msg);
 	});
-	console.log('2234234');
-	//window.location.href="board-b_detail2.do?b_idx=" + bIdx;
 });
 $(document).on('click', '.reReply', function () {		// 대댓글 열기
-	$(this).parent().parent().next().css('display', '');
+	$(this).parent().next().css('display', '');
 });
 $(document).on('click', '.reReInsert', function () {		// 대댓글 AJAX 로 넘기기
 	let cIdx = $(this).attr('cidx');
@@ -148,9 +141,8 @@ $(document).on('click', '.reReInsert', function () {		// 대댓글 AJAX 로 넘�
 		data: { c_idx: cIdx, c_content: comment, b_idx: bIdx }
 	})
 	.done(function( msg ) {
-		alert( "Data Saved: " + msg );
+		$('#commentList').html(msg);
 	});
-	window.location.href="board-b_detail2.do?b_idx=" + bIdx;
 });
 $(document).on('click', '.reReInsert', function() {		// 대댓글 빈 값으로 넘기려면 대댓글 작성 하라는 문구
 	var textarea = $(this).prev("textarea");
@@ -162,6 +154,19 @@ $(document).on('click', '.reReInsert', function() {		// 대댓글 빈 값으로 
 });
 $(document).on('click', '.reDelete', function() {		// 댓글, 대댓글 취소 시 창 닫기
 	$(this).parent().toggle();
+});
+$(document).on('click', '.reReDelete', function () {		// 댓글, 대댓글 삭제
+	let cIdx = $(this).attr('cidx');
+	let bIdx = $(this).attr('bidx');
+	
+	$.ajax({
+		method: "POST",
+		url: "aj-comment-delete.do",
+		data: { c_idx: cIdx, b_idx: bIdx }
+	})
+	.done(function( msg ) {
+		$('#commentList').html(msg);
+	});
 });
 </script>
 </body>

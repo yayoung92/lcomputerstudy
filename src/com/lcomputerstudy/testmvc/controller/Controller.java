@@ -154,8 +154,10 @@ public class Controller extends HttpServlet {
 				break;
 				
 			case "/board-b_list.do":
+				String keyWord = request.getParameter("keyWord");
+				String search = request.getParameter("search");
 				BoardService boardService = BoardService.getInstance();
-				ArrayList<Board> blist = boardService.getBoards();
+				ArrayList<Board> blist = boardService.getBoards(keyWord);
 
 				request.setAttribute("b_list", blist);
 				view = "board/b_list";
@@ -325,9 +327,8 @@ public class Controller extends HttpServlet {
 				
 				bIdx = Integer.parseInt(request.getParameter("b_idx"));
 				boardService = BoardService.getInstance();
-				clist = boardService.getComments(bIdx);
-				
-				request.setAttribute("comment", clist);
+				board = boardService.getCom(bIdx);
+				request.setAttribute("board", board);
 				view = "board/c_list";
 				break;
 			case "/aj-comment-reReply.do":
@@ -349,14 +350,23 @@ public class Controller extends HttpServlet {
 
 				boardService = BoardService.getInstance();
 				boardService.reComment(comment);
+
+				bIdx = Integer.parseInt(request.getParameter("b_idx"));
+				boardService = BoardService.getInstance();
+				board = boardService.getCom(bIdx);
+				request.setAttribute("board", board);
+				view = "board/c_list";
 				break;
 			case "/aj-comment-delete.do":
-				comment = new Comment();
-				comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
 				cIdx = Integer.parseInt(request.getParameter("c_idx"));
 				boardService = BoardService.getInstance();
 				boardService.deleteComment(cIdx);
 			
+				bIdx = Integer.parseInt(request.getParameter("b_idx"));
+				boardService = BoardService.getInstance();
+				board = boardService.getCom(bIdx);
+				request.setAttribute("board", board);
+				view = "board/c_list";
 				break;
 		}
 		

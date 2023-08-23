@@ -23,7 +23,7 @@ public class BoardDAO {
 		}
 		return dao;
 	}
-	public ArrayList<Board> getBoards() {	
+	public ArrayList<Board> getBoards(String keyWord, String search) {	
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -34,9 +34,11 @@ public class BoardDAO {
 		try {
 			conn = DBConnection.getConnection();
 			String query = new StringBuilder()
-					.append("select * from board join user on board.u_idx = user.u_idx order by b_group desc, b_order asc;")
+					.append("select * from board join user on board.u_idx = user.u_idx where ? ")
+					.append("like '%"+search+"%' order by b_group desc, b_order asc;")
 					.toString();
 			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, keyWord);
 			rs = pstmt.executeQuery();
 			list = new ArrayList<Board>();
 
@@ -54,6 +56,7 @@ public class BoardDAO {
        	       	board.setB_depth(rs.getInt("b_depth"));
        	       	list.add(board);
 	        }
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
