@@ -67,13 +67,13 @@
 	<div style="text-align:center;">
 		<form action="board-b_list.do" method="post">
 			<select name="keyWord">
-				<option value="title">제목</option>
-				<option value="title&content">제목+내용</option>
+				<option value="none">== 선택 ==</option>
+				<option value="title" ${board.getBoards eq 'title' ? 'selected' : '' }>제목</option>
+				<option value="t&c">제목+내용</option>
 				<option value="content">내용</option>
-				<option value="u_id">작성자</option>
+				<option value="writer">작성자</option>
 			</select>
-			<input type="text" placeholder ="검색어 입력" name="search" id="keywordInput" value="${search}">
-			<button id="searchBtn" type="button">검색</button>
+			<input type="text" placeholder ="검색어 입력" name="search">
 			<input type="submit" value="검색">
 		</form>
 	</div>
@@ -113,13 +113,31 @@
 	<div class="button-container">
 	    <a class="custom-button" href="board-b_insert.do" role="button">글쓰기</a>
 	 </div>
-<script>
-$(document).on('click', '.searchBtn', function() {
-	var url = document.location.href;
-	url = url + "?keyWord="+$("#searchBtn").val();
-	url = url + "&keyword="+$("#keywordInput").val();
-	location.href= url;
-});
-</script>
+	 <div>
+		<ul>
+			<c:choose>
+				<c:when test="${pagination.page > 5 }">
+					<li><a href="board-b_list.do?page=${pagination.prevPage}&keyWord=${param.keyWord}&search=${param.search}">◀</a></li>
+				</c:when>
+			</c:choose>
+			<c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}" step="1">
+				<c:choose>
+					<c:when test="${pagination.page == i }">
+						<li style="background-color:#ededed;">
+							<span>${i}</span>
+						</li>
+					</c:when>
+					<c:when test="${pagination.page != i }">
+						<li><a href="board-b_list.do?page=${i}&keyWord=${param.keyWord}&search=${param.search}">${i}</a></li>
+					</c:when>
+				</c:choose>
+			</c:forEach>
+			<c:choose>
+				<c:when test="${pagination.page <= pagination.endPage && pagination.page < pagination.lastPage}">
+					<li><a href="board-b_list.do?page=${pagination.nextPage}&keyWord=${param.keyWord}&search=${param.search}">▶</a></li>
+				</c:when>
+			</c:choose>
+		</ul>
+	</div>
 </body>
 </html>

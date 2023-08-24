@@ -10,6 +10,7 @@ import java.util.List;
 import com.lcomputerstudy.testmvc.datebase.DBConnection;
 import com.lcomputerstudy.testmvc.vo.Board;
 import com.lcomputerstudy.testmvc.vo.Comment;
+import com.lcomputerstudy.testmvc.vo.Pagination;
 import com.lcomputerstudy.testmvc.vo.User;
 
 public class BoardDAO {
@@ -23,22 +24,52 @@ public class BoardDAO {
 		}
 		return dao;
 	}
-	public ArrayList<Board> getBoards(String keyWord, String search) {	
+
+	public List<Board> getBoards(String keyWord, String search, Pagination pagaination) {	
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		ArrayList<Board> list = null;
 		Board board = new Board();
     	User user = new User();
+    	int pageNum = pagaination.getPageNum();
 		
 		try {
 			conn = DBConnection.getConnection();
-			String query = new StringBuilder()
-					.append("select * from board join user on board.u_idx = user.u_idx where ? ")
-					.append("like '%"+search+"%' order by b_group desc, b_order asc;")
-					.toString();
+			String query = "select * from board join user on board.u_idx = user.u_idx ";
+				if(keyWord == null || keyWord.equals("none")) {
+					query += "";
+				}
+				else if(keyWord.equals("title")) {
+					query += "where b_title like ? ";
+				} else if(keyWord.equals("t&c")) {
+					query += "where b_title like ? or b_content like ? ";
+				} else if(keyWord.equals("content")) {
+					query += "where b_content like ? ";
+				} else if(keyWord.equals("writer")) {
+					query += "where user.u_id like ? ";
+				} else {
+					query += "";
+				}
+				
+			query += "order by b_group desc, b_order asc limit ?, ?";
 			pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, keyWord);
+				if(keyWord == null || keyWord.equals("none")) {
+					pstmt.setInt(1, pageNum);
+					pstmt.setInt(2, Pagination.perPage);
+				} else if(keyWord.equals("t&c")) {
+					pstmt.setString(1, "%" + search + "%");
+					pstmt.setString(2, "%" + search + "%");
+					pstmt.setInt(3, pageNum);
+					pstmt.setInt(4, Pagination.perPage);
+				} else if(keyWord.equals("title") || keyWord.equals("content") || keyWord.equals("writer")) {
+					pstmt.setString(1, "%" + search + "%");
+					pstmt.setInt(2, pageNum);
+					pstmt.setInt(3, Pagination.perPage);
+				} else {
+					pstmt.setInt(1, pageNum);
+					pstmt.setInt(2, Pagination.perPage);
+				}
 			rs = pstmt.executeQuery();
 			list = new ArrayList<Board>();
 
@@ -69,6 +100,62 @@ public class BoardDAO {
 			}
 		}
 		return list;
+	}
+	public int getBoardsCount(String keyWord, String search) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int count = 0;
+		
+		try {
+			conn = DBConnection.getConnection();
+			String query = "SELECT COUNT(*) count FROM board";
+				if(keyWord == null || keyWord.equals("none")) {
+					query += "";
+				}
+				else if(keyWord.equals("title")) {
+					query += "where b_title like ? ";
+				} else if(keyWord.equals("t&c")) {
+					query += "where b_title like ? or b_content like ? ";
+				} else if(keyWord.equals("content")) {
+					query += "where b_content like ? ";
+				} else if(keyWord.equals("writer")) {
+					query += "where user.u_id like ? ";
+				} else {
+					query += "";
+				}
+			pstmt = conn.prepareStatement(query);
+			if(keyWord == null || keyWord.equals("none")) {
+				
+			} else if(keyWord.equals("t&c")) {
+				pstmt.setString(1, "%" + search + "%");
+				pstmt.setString(2, "%" + search + "%");
+				
+			} else if(keyWord.equals("title") || keyWord.equals("content") || keyWord.equals("writer")) {
+				pstmt.setString(1, "%" + search + "%");
+				
+			} else {
+				
+			}
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				count = rs.getInt("count");
+			}
+		} catch(Exception e) {
+			
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+			} catch(SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		System.out.println(count);
+		return count;
+		
 	}
 	public void insertBoard(Board board) {
 		Connection conn = null;

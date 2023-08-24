@@ -6,6 +6,7 @@ import java.util.List;
 import com.lcomputerstudy.testmvc.dao.BoardDAO;
 import com.lcomputerstudy.testmvc.vo.Board;
 import com.lcomputerstudy.testmvc.vo.Comment;
+import com.lcomputerstudy.testmvc.vo.Pagination;
 
 public class BoardService {
 	private static BoardService service = null;
@@ -21,8 +22,11 @@ public class BoardService {
 		}
 		return service;
 	}
-	public ArrayList<Board> getBoards(String keyWord) {
-		return dao.getBoards(keyWord);
+	public List<Board> getBoards(String keyWord, String search, Pagination pagination) {
+		return dao.getBoards(keyWord, search, pagination);
+	}
+	public int getBoardsCount(String keyWord, String search) {
+		return dao.getBoardsCount(keyWord, search);
 	}
 	public void insertBoard(Board board) {
 		dao.insertBoard(board);

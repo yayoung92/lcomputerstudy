@@ -46,6 +46,7 @@ public class Controller extends HttpServlet {
 		int bIdx = 0;
 		int cIdx = 0;
 		int usercount = 0;
+		int boardcount = 0;
 		int page = 1;
 		HttpSession session = null;
 		command = checkSession(request, response, command);
@@ -154,11 +155,26 @@ public class Controller extends HttpServlet {
 				break;
 				
 			case "/board-b_list.do":
+				reqPage = request.getParameter("page");
+				if(reqPage != null) 
+					page = Integer.parseInt(reqPage);
+				
 				String keyWord = request.getParameter("keyWord");
 				String search = request.getParameter("search");
+				
 				BoardService boardService = BoardService.getInstance();
-				ArrayList<Board> blist = boardService.getBoards(keyWord);
+				boardcount = boardService.getBoardsCount(keyWord, search);
+				
+				System.out.println(boardcount);
+				
+				pagination = new Pagination();
+				pagination.setPage(page);
+				pagination.setCount(boardcount);
+				pagination.init();
+				
+				List<Board> blist = boardService.getBoards(keyWord, search, pagination);
 
+				request.setAttribute("pagination", pagination);
 				request.setAttribute("b_list", blist);
 				view = "board/b_list";
 				break;
