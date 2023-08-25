@@ -62,13 +62,19 @@
 			</tr>
 				
 		</table>
-	<a href="board-b_list.do"><input type="button" value="돌아가기"></a>
-	<a href="board-b_reply.do?b_idx=${board.b_idx}"><input type="button" value="답글"></a>
+	<div>
+		<a href="board-b_list.do"><input type="button" value="돌아가기"></a>
+		<a href="board-b_reply.do?b_idx=${board.b_idx}"><input type="button" value="답글"></a>
+		<c:if test="${board.user.u_id eq sessionScope.user.u_id}">
+			<a href="board-b_edit.do?b_idx=${board.b_idx }"><input type="button" value="수정"></a>
+			<a href="board-b_delete-process.do?b_idx=${board.b_idx}"><input type="button" value="삭제"></a>
+		</c:if>
+	</div>
 	</form>
 	<h3>댓글 리스트</h3>
 	
 	<hr>
-	<div id="commentList">
+	<div id="commentListt">
 	  	<c:forEach items="${board.commentList}" var="comment">
 	  	<div class="commentList">
 		  	<hr>
@@ -110,62 +116,71 @@
 
 	</form>
 <script>
-$(document).on('click', '.reEdit', function() {      // 수정값 가져오기
-	 $(this).parent().next().next().css('display', '');
-});
-$(document).on('click', '.reInsert', function () {   // 수정값 넘기기
-	let cIdx = $(this).attr('cidx');
-	let comment = $(this).prev().val();
-	let bIdx = $(this).attr('bidx');
+$(document).ready(function() {
+    var commentList = $("#commentList");
 
-	$.ajax({
-		method: "POST",
-		url: "aj-comment-update.do",
-		data: { c_idx: cIdx, c_content: comment, b_idx: bIdx }
-	})
-	.done(function( msg ) {
-		$('#commentList').html(msg);
+    if (commentList === 0) {
+    	commentList.prev().find(".reReDelete, .reEdit, .reReply").toggle();
+        commentList.find(".reReInsert, .reInsert").toggle();
+    }
+
+	$(document).on('click', '.reEdit', function() {      // 수정값 가져오기
+		 $(this).parent().next().next().css('display', '');
 	});
-});
-$(document).on('click', '.reReply', function () {		// 대댓글 열기
-	$(this).parent().next().css('display', '');
-});
-$(document).on('click', '.reReInsert', function () {		// 대댓글 AJAX 로 넘기기
-	let cIdx = $(this).attr('cidx');
-	let comment = $(this).prev("textarea").val();
-	let bIdx = $(this).attr('bidx');
+	$(document).on('click', '.reInsert', function () {   // 수정값 넘기기
+		let cIdx = $(this).attr('cidx');
+		let comment = $(this).prev().val();
+		let bIdx = $(this).attr('bidx');
 	
-	$.ajax({
-		method: "POST",
-		url: "aj-comment-reReply.do",
-		data: { c_idx: cIdx, c_content: comment, b_idx: bIdx }
-	})
-	.done(function( msg ) {
-		$('#commentList').html(msg);
+		$.ajax({
+			method: "POST",
+			url: "aj-comment-update.do",
+			data: { c_idx: cIdx, c_content: comment, b_idx: bIdx }
+		})
+		.done(function( msg ) {
+			$('#commentList').html(msg);
+		});
 	});
-});
-$(document).on('click', '.reReInsert', function() {		// 대댓글 빈 값으로 넘기려면 대댓글 작성 하라는 문구
-	var textarea = $(this).prev("textarea");
-    var content = textarea.val();
-    if (content.trim() === "") {
-        alert("대댓글 내용을 입력하세요.");
-        return;
-    };
-});
-$(document).on('click', '.reDelete', function() {		// 댓글, 대댓글 취소 시 창 닫기
-	$(this).parent().toggle();
-});
-$(document).on('click', '.reReDelete', function () {		// 댓글, 대댓글 삭제
-	let cIdx = $(this).attr('cidx');
-	let bIdx = $(this).attr('bidx');
-	
-	$.ajax({
-		method: "POST",
-		url: "aj-comment-delete.do",
-		data: { c_idx: cIdx, b_idx: bIdx }
-	})
-	.done(function( msg ) {
-		$('#commentList').html(msg);
+	$(document).on('click', '.reReply', function () {		// 대댓글 열기
+		$(this).parent().next().css('display', '');
+	});
+	$(document).on('click', '.reReInsert', function () {		// 대댓글 AJAX 로 넘기기
+		let cIdx = $(this).attr('cidx');
+		let comment = $(this).prev("textarea").val();
+		let bIdx = $(this).attr('bidx');
+		
+		$.ajax({
+			method: "POST",
+			url: "aj-comment-reReply.do",
+			data: { c_idx: cIdx, c_content: comment, b_idx: bIdx }
+		})
+		.done(function( msg ) {
+			$('#commentList').html(msg);
+		});
+	});
+	$(document).on('click', '.reReInsert', function() {		// 대댓글 빈 값으로 넘기려면 대댓글 작성 하라는 문구
+		var textarea = $(this).prev("textarea");
+	    var content = textarea.val();
+	    if (content.trim() === "") {
+	        alert("대댓글 내용을 입력하세요.");
+	        return;
+	    };
+	});
+	$(document).on('click', '.reDelete', function() {		// 댓글, 대댓글 취소 시 창 닫기
+		$(this).parent().toggle();
+	});
+	$(document).on('click', '.reReDelete', function () {		// 댓글, 대댓글 삭제
+		let cIdx = $(this).attr('cidx');
+		let bIdx = $(this).attr('bidx');
+		
+		$.ajax({
+			method: "POST",
+			url: "aj-comment-delete.do",
+			data: { c_idx: cIdx, b_idx: bIdx }
+		})
+		.done(function( msg ) {
+			$('#commentList').html(msg);
+		});
 	});
 });
 </script>

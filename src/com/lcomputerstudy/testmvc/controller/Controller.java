@@ -1,7 +1,6 @@
 package com.lcomputerstudy.testmvc.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -165,17 +164,17 @@ public class Controller extends HttpServlet {
 				BoardService boardService = BoardService.getInstance();
 				boardcount = boardService.getBoardsCount(keyWord, search);
 				
-				System.out.println(boardcount);
-				
 				pagination = new Pagination();
 				pagination.setPage(page);
 				pagination.setCount(boardcount);
 				pagination.init();
 				
 				List<Board> blist = boardService.getBoards(keyWord, search, pagination);
-
-				request.setAttribute("pagination", pagination);
+				
+				session = request.getSession();
 				request.setAttribute("b_list", blist);
+				request.setAttribute("pagination", pagination);
+				
 				view = "board/b_list";
 				break;
 			case "/board-b_insert.do":
@@ -196,8 +195,7 @@ public class Controller extends HttpServlet {
 				boardService.insertBoard(board);
 						
 				view = "board/b_insert-result";
-				break;
-				
+				break;				
 				
 ////// 상세페이지 db board 로 연결해서 한번에 가져오기.		//////
 			case "/board-b_detail2.do":
@@ -208,8 +206,7 @@ public class Controller extends HttpServlet {
 				request.setAttribute("board", board);
 				boardService.boardViews(bIdx);
 				view = "board/b_detail2";
-				break;
-				
+				break;				
 	////////////////////			
 			case "/board-b_detail.do":
 				bIdx = Integer.parseInt(request.getParameter("b_idx"));
@@ -278,7 +275,7 @@ public class Controller extends HttpServlet {
 				
 				view = "board/b_insert-result";
 				break;
-			case "/c_comment.do":
+			case "/c_comment.do":		// 댓글 달기
 				session = request.getSession();
 				user = (User)session.getAttribute("user");
 				
@@ -294,7 +291,7 @@ public class Controller extends HttpServlet {
 				String redirectURL = request.getContextPath() + "/board-b_detail2.do?b_idx=" + comment.getB_idx();
 				response.sendRedirect(redirectURL);
 				return;
-			case "/c_delete.do":
+			case "/c_delete.do":		// 댓글 삭제
 				comment = new Comment();
 				comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
 				cIdx = Integer.parseInt(request.getParameter("c_idx"));
@@ -401,13 +398,16 @@ public class Controller extends HttpServlet {
 				,"/user-edit.do"
 				,"/user-edit-process.do"
 				,"/logout.do"
+				,"/board-b_list.do"
+				,"/board-b_delete.do"
+				,"/c_delete.do"
 			};
-		
+
 		for (String item : authList) {
 			if (item.equals(command)) {
 				if (session.getAttribute("user") == null) {
 					command = "/access-denied.do";
-				}
+				} 
 			}
 		}
 		return command;

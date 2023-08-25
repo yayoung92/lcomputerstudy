@@ -43,23 +43,32 @@
 		margin:0 5px;
 		border-radius:5px;
 	}
+	.toolbar {
+		text-align: right;
+		margin-bottom: 10px;
+	}
 </style>
 <body>
 	<h1>회원 목록</h1>
+	<div class="toolbor">
+		<input type="button" value="관리자">
+	</div>
 	<table>
 		<tr>
-			<td colspan="3">전체 회원 수 : ${pagination.count}</td>
+			<td colspan="4">전체 회원 수 : ${pagination.count}</td>
 		</tr>
 		<tr>
 			<th>No</th>
 			<th>ID</th>
 			<th>이름</th>
+			<th>권한</th>
 		</tr>
 		<c:forEach items="${list}" var="user" varStatus="status">
 			<tr>
 				<td><a href="user-detail.do?u_idx=${user.u_idx}">${user.u_idx}</a></td>
 				<td>${user.u_id}</td>
 				<td>${user.u_name}</td>
+				<td><input type="button" value="관리자"></td>
 			</tr>
 		</c:forEach>
 	</table>

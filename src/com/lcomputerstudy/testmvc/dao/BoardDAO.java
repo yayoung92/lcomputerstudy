@@ -42,7 +42,7 @@ public class BoardDAO {
 				}
 				else if(keyWord.equals("title")) {
 					query += "where b_title like ? ";
-				} else if(keyWord.equals("t&c")) {
+				} else if(keyWord.equals("tandc")) {
 					query += "where b_title like ? or b_content like ? ";
 				} else if(keyWord.equals("content")) {
 					query += "where b_content like ? ";
@@ -57,22 +57,22 @@ public class BoardDAO {
 				if(keyWord == null || keyWord.equals("none")) {
 					pstmt.setInt(1, pageNum);
 					pstmt.setInt(2, Pagination.perPage);
-				} else if(keyWord.equals("t&c")) {
-					pstmt.setString(1, "%" + search + "%");
-					pstmt.setString(2, "%" + search + "%");
-					pstmt.setInt(3, pageNum);
-					pstmt.setInt(4, Pagination.perPage);
 				} else if(keyWord.equals("title") || keyWord.equals("content") || keyWord.equals("writer")) {
 					pstmt.setString(1, "%" + search + "%");
 					pstmt.setInt(2, pageNum);
 					pstmt.setInt(3, Pagination.perPage);
+				} else if(keyWord.equals("tandc")) {
+					pstmt.setString(1, "%" + search + "%");
+					pstmt.setString(2, "%" + search + "%");
+					pstmt.setInt(3, pageNum);
+					pstmt.setInt(4, Pagination.perPage);
 				} else {
 					pstmt.setInt(1, pageNum);
 					pstmt.setInt(2, Pagination.perPage);
 				}
 			rs = pstmt.executeQuery();
 			list = new ArrayList<Board>();
-
+			
 	        while(rs.next()){
 	        	board = new Board();
 	        	user = new User();
@@ -87,7 +87,6 @@ public class BoardDAO {
        	       	board.setB_depth(rs.getInt("b_depth"));
        	       	list.add(board);
 	        }
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -109,13 +108,13 @@ public class BoardDAO {
 		
 		try {
 			conn = DBConnection.getConnection();
-			String query = "SELECT COUNT(*) count FROM board";
+			String query = "SELECT COUNT(*) count FROM board JOIN user ON board.u_idx = user.u_idx ";
 				if(keyWord == null || keyWord.equals("none")) {
 					query += "";
 				}
 				else if(keyWord.equals("title")) {
 					query += "where b_title like ? ";
-				} else if(keyWord.equals("t&c")) {
+				} else if(keyWord.equals("tandc")) {
 					query += "where b_title like ? or b_content like ? ";
 				} else if(keyWord.equals("content")) {
 					query += "where b_content like ? ";
@@ -127,13 +126,11 @@ public class BoardDAO {
 			pstmt = conn.prepareStatement(query);
 			if(keyWord == null || keyWord.equals("none")) {
 				
-			} else if(keyWord.equals("t&c")) {
+			} else if(keyWord.equals("tandc")) {
 				pstmt.setString(1, "%" + search + "%");
 				pstmt.setString(2, "%" + search + "%");
-				
 			} else if(keyWord.equals("title") || keyWord.equals("content") || keyWord.equals("writer")) {
 				pstmt.setString(1, "%" + search + "%");
-				
 			} else {
 				
 			}
@@ -153,7 +150,6 @@ public class BoardDAO {
 				e.printStackTrace();
 			}
 		}
-		System.out.println(count);
 		return count;
 		
 	}

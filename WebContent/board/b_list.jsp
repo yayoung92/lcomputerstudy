@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>  
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -68,8 +69,8 @@
 		<form action="board-b_list.do" method="post">
 			<select name="keyWord">
 				<option value="none">== 선택 ==</option>
-				<option value="title" ${board.getBoards eq 'title' ? 'selected' : '' }>제목</option>
-				<option value="t&c">제목+내용</option>
+				<option value="title">제목</option>
+				<option value="tandc">제목+내용</option>
 				<option value="content">내용</option>
 				<option value="writer">작성자</option>
 			</select>
@@ -84,7 +85,6 @@
 		<col width="50px">
 		<col width="70px">
 		<col width="100px">
-		<col width="50px">
 			<tr>
 				<th style="background-color:#eeeeee; text-align:center;">글번호</th>
 				<th style="background-color:#eeeeee; text-align:center;">제목</th>
@@ -92,7 +92,6 @@
 				<th style="background-color:#eeeeee; text-align:center;">조회수</th>
 				<th style="background-color:#eeeeee; text-align:center;">작성자</th>
 				<th style="background-color:#eeeeee; text-align:center;">작성일</th>
-				<th style="background-color:#eeeeee; text-align:center;">수정</th>
 				
 			</tr>
 	
@@ -106,7 +105,6 @@
 				<td>${board.b_view}</td>
 				<td>${board.user.u_id}</td>
 				<td>${board.b_date }</td>
-				<td><a href="board-b_edit.do?b_idx=${board.b_idx }"><input type="button" value="수정"></a></td>
 			</tr>
 		</c:forEach>
 	</table>
@@ -133,7 +131,7 @@
 				</c:choose>
 			</c:forEach>
 			<c:choose>
-				<c:when test="${pagination.page <= pagination.endPage && pagination.page < pagination.lastPage}">
+				<c:when test="${pagination.page < pagination.lastPage}">
 					<li><a href="board-b_list.do?page=${pagination.nextPage}&keyWord=${param.keyWord}&search=${param.search}">▶</a></li>
 				</c:when>
 			</c:choose>
