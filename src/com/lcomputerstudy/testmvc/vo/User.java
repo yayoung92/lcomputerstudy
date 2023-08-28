@@ -8,7 +8,21 @@ public class User {
 	private String u_tel;
 	private String u_age;
 	private String[] tel;
+	private int u_level;
+	private String levelname;
 
+	public int getU_level() {
+		return u_level;
+	}
+	public void setU_level(int u_level) {
+		this.u_level = u_level;
+	}
+	public String getLevelname() {
+		return levelname;
+	}
+	public void setLevelname(String levelname) {
+		this.levelname = levelname;
+	}
 	public String[] getTel() {
 		return tel;
 	}

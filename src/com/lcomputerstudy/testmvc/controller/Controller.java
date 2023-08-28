@@ -65,7 +65,14 @@ public class Controller extends HttpServlet {
 				pagination.init();
 				
 				List<User> list = userService.getUsers(pagination);
-
+	
+				for(User user1 : list) {
+					if(user1.getU_level() >= 5) {
+						user1.setLevelname("관리자");
+					} else {
+						user1.setLevelname("일반회원");
+					}
+				}
 				request.setAttribute("list", list);
 				request.setAttribute("pagination", pagination);
 				view = "user/list";
@@ -381,6 +388,21 @@ public class Controller extends HttpServlet {
 				request.setAttribute("board", board);
 				view = "board/c_list";
 				break;
+			case "/aj-user-level-update.do":
+				String targetuid = request.getParameter("u_id");
+				int uidx = Integer.parseInt(request.getParameter("u_idx"));
+				int levels = Integer.parseInt(request.getParameter("u_level"));
+
+				userService = UserService.getInstance();
+				User targetUser = userService.getUid(targetuid);
+				user = (User) userService.updateUserLevel(targetUser.getU_idx(), levels);
+
+				uIdx = Integer.parseInt(request.getParameter("u_idx"));
+				userService = UserService.getInstance();
+				user = userService.getUser(uidx);
+				request.setAttribute("user", user);
+				view = "user/u_list";
+				break;
 		}
 		
 		RequestDispatcher rd = request.getRequestDispatcher(view + ".jsp");
@@ -400,6 +422,11 @@ public class Controller extends HttpServlet {
 				,"/logout.do"
 				,"/board-b_list.do"
 				,"/board-b_delete.do"
+				,"/board-b_detail2.do"
+				,"/board-b_edit.do"
+				,"/board-b_edit.process.do"
+				,"/board-insert.do"
+				,"/board-insert-process.do"
 				,"/c_delete.do"
 			};
 

@@ -25,5 +25,4 @@
 		<button type="button" class="reInsert" cidx="${comment.c_idx}" bidx="${board.b_idx }">수정완료</button>
 		<button type="button" class="reDelete">취소</button>
 	</div>
-	
 </c:forEach>

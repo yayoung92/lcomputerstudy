@@ -45,4 +45,10 @@ public class UserService {
 	public User loginUser(String idx, String pw) {
 		return dao.loginUser(idx,pw);
 	}
+	public User updateUserLevel(int uIdx, int uLevel) {
+		return dao.updateUserLevel(uIdx, uLevel);
+	}
+	public User getUid(String uid) {
+		return dao.getUid(uid);
+	}
 }

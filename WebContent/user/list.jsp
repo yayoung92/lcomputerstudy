@@ -1,11 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="UTF-8">
 	<title>회원목록2</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 </head>
 <style>
 	h1 {
@@ -43,16 +45,9 @@
 		margin:0 5px;
 		border-radius:5px;
 	}
-	.toolbar {
-		text-align: right;
-		margin-bottom: 10px;
-	}
 </style>
 <body>
 	<h1>회원 목록</h1>
-	<div class="toolbor">
-		<input type="button" value="관리자">
-	</div>
 	<table>
 		<tr>
 			<td colspan="4">전체 회원 수 : ${pagination.count}</td>
@@ -61,18 +56,25 @@
 			<th>No</th>
 			<th>ID</th>
 			<th>이름</th>
-			<th>권한</th>
+			<th>등급</th>
 		</tr>
 		<c:forEach items="${list}" var="user" varStatus="status">
 			<tr>
 				<td><a href="user-detail.do?u_idx=${user.u_idx}">${user.u_idx}</a></td>
 				<td>${user.u_id}</td>
 				<td>${user.u_name}</td>
-				<td><input type="button" value="관리자"></td>
+				<td>${user.levelname} </td>
 			</tr>
 		</c:forEach>
 	</table>
-
+	<div class="userLevel">
+		<c:if test="${user.u_level >= 5 }">
+			<button type="button" class="userLevel" ulevel="${user.u_level }">레벨 설정</button>
+		</c:if>
+	</div>
+	<div style="text-align: center;">
+		<a href="board-b_list.do" ><input type="button" value="게시판 목록"></a>
+	</div>
 	<div>
 		<ul>
 			 <c:choose>
@@ -99,5 +101,30 @@
 			</c:choose> 
 		</ul>
 	</div>
+<script>
+
+$(document).on('click', '.userLevel', function() {
+//	let uIdx = $(this).attr('uidx');
+	let uLevel = $(this).attr('ulevel');
+
+	 let targetUserId = prompt("레벨을 설정할 사용자의 ID를 입력하세요:");
+	    if (targetUserId === null || targetUserId.trim() === "") {
+	        return;
+	    }
+	   
+	let newLevel = prompt("새로운 회원 등급을 입력하세요:", uLevel);
+    if (newLevel === null || newLevel === "") {
+        return;
+    }
+    
+	$.ajax({
+		method: "POST",
+		url: "aj-user-level-update.do",
+		data: { u_level: newLevel, u_id: targetUserId }
+	 }).done(function(msg) {
+		 $('#userLevel').html(msg);
+	 });
+});
+</script>
 </body>
 </html>

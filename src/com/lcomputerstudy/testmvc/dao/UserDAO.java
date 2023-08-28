@@ -51,6 +51,7 @@ public class UserDAO {
        	       	user.setU_name(rs.getString("u_name"));
        	       	user.setU_tel(rs.getString("u_tel"));
        	       	user.setU_age(rs.getString("u_age"));
+       	       	user.setU_level(rs.getInt("u_level"));
        	       	
        	       	list.add(user);
 	        }
@@ -145,12 +146,22 @@ public class UserDAO {
 	    		user.setU_tel(rs.getString("u_tel"));
 	    		user.setTel(user.getU_tel().split("-"));
 	    		user.setU_age(rs.getString("u_age"));
+	    		user.setU_level(rs.getInt("u_level"));
 	    	}
-    	} catch(Exception e) {
-    		e.printStackTrace();
-    	}
-		return user;
-	}
+    	} catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return user;
+    }
 	
 	public void editUser(User user) {
 		Connection conn = null;
@@ -244,6 +255,7 @@ public class UserDAO {
 				user.setU_pw(rs.getString("u_pw"));
 				user.setU_id(rs.getString("u_id"));
 				user.setU_name(rs.getString("u_name"));
+				user.setU_level(rs.getInt("u_level"));
 			}
 		} catch(Exception e) {
 			System.out.println("SQLException : " + e.getMessage());
@@ -257,4 +269,68 @@ public class UserDAO {
 		}
 		return user;
 	}
+	public User updateUserLevel(int uIdx, int uLevel) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		User user = null;
+		
+		try {
+			conn = DBConnection.getConnection();
+			String sql = "UPDATE user SET u_level = ? WHERE u_idx = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, uLevel);
+			pstmt.setInt(2, uIdx);
+			pstmt.executeUpdate();
+
+		 } catch (Exception e) {
+	            e.printStackTrace();
+		 } finally {
+			try {
+				if (pstmt != null) pstmt.close();
+				if (conn != null) conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return user;
+	}
+	public User getUid(String uid) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		User user = null;
+		
+		try {
+			conn = DBConnection.getConnection();
+	  	    String query = "select * from user where u_id=?";
+	  	 	pstmt = conn.prepareStatement(query);
+		   	pstmt.setString(1, uid);
+		   	
+	    	rs = pstmt.executeQuery();
+	
+	    	while(rs.next()){
+	    		user = new User();
+	    		user.setU_idx(rs.getInt("u_idx"));
+	    		user.setU_id(rs.getString("u_id"));
+	    		user.setU_pw(rs.getString("u_pw"));
+	    		user.setU_name(rs.getString("u_name"));
+	    		user.setU_tel(rs.getString("u_tel"));
+	    		user.setTel(user.getU_tel().split("-"));
+	    		user.setU_age(rs.getString("u_age"));
+	    		user.setU_level(rs.getInt("u_level"));
+	    	}
+    	} catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return user;
+    }
 }
