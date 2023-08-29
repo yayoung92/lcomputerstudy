@@ -48,30 +48,31 @@
 </style>
 <body>
 	<h1>회원 목록</h1>
-	<table>
-		<tr>
-			<td colspan="4">전체 회원 수 : ${pagination.count}</td>
-		</tr>
-		<tr>
-			<th>No</th>
-			<th>ID</th>
-			<th>이름</th>
-			<th>등급</th>
-		</tr>
-		<c:forEach items="${list}" var="user" varStatus="status">
-			<tr>
-				<td><a href="user-detail.do?u_idx=${user.u_idx}">${user.u_idx}</a></td>
-				<td>${user.u_id}</td>
-				<td>${user.u_name}</td>
-				<td>${user.levelname} </td>
-			</tr>
-		</c:forEach>
-	</table>
-	<div class="userLevel">
+	<div style="text-align: center;" class="userLevelDiv">
 		<c:if test="${user.u_level >= 5 }">
-			<button type="button" class="userLevel" ulevel="${user.u_level }">레벨 설정</button>
+			<button type="button" class="userLevel" >레벨 설정</button>
 		</c:if>
 	</div>
+	<div id="userLevelName">
+		<table>
+			<tr>
+				<td colspan="4">전체 회원 수 : ${pagination.count}</td>
+			<tr>
+				<th>No</th>
+				<th>ID</th>
+				<th>이름</th>
+				<th>등급</th>
+			</tr>
+			<c:forEach items="${list}" var="user" varStatus="status" >
+				<tr>
+					<td><a href="user-detail.do?u_idx=${user.u_idx}">${user.u_idx}</a></td>
+					<td>${user.u_id }</td>
+					<td>${user.u_name }</td>
+					<td>${user.levelname }</td>
+				</tr>
+			</c:forEach>
+		</table>
+	</div>	
 	<div style="text-align: center;">
 		<a href="board-b_list.do" ><input type="button" value="게시판 목록"></a>
 	</div>
@@ -104,25 +105,16 @@
 <script>
 
 $(document).on('click', '.userLevel', function() {
-//	let uIdx = $(this).attr('uidx');
-	let uLevel = $(this).attr('ulevel');
-
-	 let targetUserId = prompt("레벨을 설정할 사용자의 ID를 입력하세요:");
-	    if (targetUserId === null || targetUserId.trim() === "") {
-	        return;
-	    }
-	   
-	let newLevel = prompt("새로운 회원 등급을 입력하세요:", uLevel);
-    if (newLevel === null || newLevel === "") {
-        return;
-    }
-    
+	let targetUserIdx = prompt("레벨을 설정할 사용자의 ID를 입력하세요:", "");   
+	let newLevel = prompt("새로운 회원 등급을 입력하세요:", "");
+	
 	$.ajax({
 		method: "POST",
 		url: "aj-user-level-update.do",
-		data: { u_level: newLevel, u_id: targetUserId }
-	 }).done(function(msg) {
-		 $('#userLevel').html(msg);
+		data: { u_level: newLevel, u_id: targetUserIdx }
+	 })
+	 .done(function(msg) {
+		 $('#userLevelName').html(msg);
 	 });
 });
 </script>

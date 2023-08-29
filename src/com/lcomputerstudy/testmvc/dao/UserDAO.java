@@ -55,6 +55,7 @@ public class UserDAO {
        	       	
        	       	list.add(user);
 	        }
+	        
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -269,26 +270,25 @@ public class UserDAO {
 		}
 		return user;
 	}
-	public User updateUserLevel(int uIdx, int uLevel) {
+	public User levelUser(int level, String uid) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		User user = null;
-		
+				
 		try {
 			conn = DBConnection.getConnection();
-			String sql = "UPDATE user SET u_level = ? WHERE u_idx = ?";
+			String sql = "UPDATE user SET u_level = ? where u_id=?";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, uLevel);
-			pstmt.setInt(2, uIdx);
+			pstmt.setInt(1, level);
+			pstmt.setString(2, uid);
 			pstmt.executeUpdate();
-
-		 } catch (Exception e) {
-	            e.printStackTrace();
-		 } finally {
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
 			try {
-				if (pstmt != null) pstmt.close();
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+			} catch(SQLException e) {
 				e.printStackTrace();
 			}
 		}

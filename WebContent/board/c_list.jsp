@@ -11,8 +11,15 @@
 		${comment.c_date }<br>
 	</div>
 	<div>
-		<button type="button" class="reReDelete" cidx="${comment.c_idx }" bidx="${board.b_idx }">삭제</button>
-		<button type="button" class="reEdit">수정</button>
+		<c:choose>
+				<c:when test="${comment.user.u_id eq sessionScope.user.u_id}">
+					<button type="button" class="reReDelete" cidx="${comment.c_idx }" bidx="${board.b_idx }">삭제</button>
+					<button type="button" class="reEdit">수정</button>
+				</c:when>
+				<c:when test="${sessionScope.user.u_level >= 5 }">
+					<button type="button" class="reReDelete" cidx="${comment.c_idx }" bidx="${board.b_idx }">삭제</button>
+				</c:when>
+			</c:choose>
 		<button type="button" class="reReply">대댓글</button>
 	</div>
 	<div style="display: none;">
