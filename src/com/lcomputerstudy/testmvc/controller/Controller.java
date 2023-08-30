@@ -1,7 +1,11 @@
 package com.lcomputerstudy.testmvc.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.UUID;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,16 +13,26 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.annotation.MultipartConfig;
+
+import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
+import com.oreilly.servlet.MultipartRequest;
 
 import com.lcomputerstudy.testmvc.service.BoardService;
+import com.lcomputerstudy.testmvc.service.FileService;
 import com.lcomputerstudy.testmvc.service.UserService;
 import com.lcomputerstudy.testmvc.vo.Board;
 import com.lcomputerstudy.testmvc.vo.Comment;
 import com.lcomputerstudy.testmvc.vo.Pagination;
 import com.lcomputerstudy.testmvc.vo.User;
+import com.lcomputerstudy.testmvc.vo.File;
 
 
 @WebServlet("*.do")
+@MultipartConfig(
+		maxFileSize = 1024 * 1024 * 5, 
+		maxRequestSize = 1024 * 1024 * 50
+)
 public class Controller extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
@@ -419,6 +433,17 @@ public class Controller extends HttpServlet {
 				request.setAttribute("list", list1);
 				request.setAttribute("pagination", pagination);
 				view = "user/u_list";
+				break;
+			case "/file_list.do":
+				String fileWriter = request.getParameter("name");
+				String fileTitle = request.getParameter("subject");
+				
+				List<File> fileList = new ArrayList<>();
+				FileService fileService = FileService.getInstance();
+				fileList = fileService.getFileList();
+				
+				request.setAttribute("fileList", fileList);
+				view = "file/f_list";
 				break;
 		}
 		

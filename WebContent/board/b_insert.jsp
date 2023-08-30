@@ -27,6 +27,7 @@
 			<td>${sessionScope.user.u_name }</td>
 		</tr> 
 		</table>
+		<a href="b_file_form.jsp" >파일 업로드</a>
 		<input type="submit" value="글등록">
 	</form>
 	
