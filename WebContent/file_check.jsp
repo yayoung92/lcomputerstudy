@@ -6,7 +6,7 @@
 	String subject = request.getParameter("subject");
 	String filename1 = request.getParameter("filename1");
 	String filename2 = request.getParameter("filename2");
-
+	String comment = request.getParameter("comment");
 
 %>
 <!DOCTYPE html>
@@ -21,6 +21,6 @@
 제목 : <%= subject %><br>
 파일명1 : <a href="upload/<%= filename1 %>"><%= filename1 %></a><br>
 파일명2 : <a href="upload/<%= filename2 %>"><%= filename2 %></a><br>
-파일 설명 : <%= %>
+파일 설명 : <%= comment%>
 </body>
 </html>

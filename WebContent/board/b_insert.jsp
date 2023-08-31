@@ -11,7 +11,7 @@
 </head>
 <body>
  	<h2> 글 작성하기 </h2>
-	<form action="board-b_insert-process.do" name="board" method="post">
+	<form action="board-b_insert-process.do" name="board" method="post" enctype="multipart/form-data">
 		<table>
 		<tr>
 			<td>제목 </td>
@@ -23,13 +23,15 @@
 		</td>
 		</tr>
 	 	<tr>
-	 		<td>작성자 </td>
+	 		<td>작성자 : </td>
 			<td>${sessionScope.user.u_name }</td>
 		</tr> 
 		</table>
-		<a href="b_file_form.jsp" >파일 업로드</a>
+<!--  	<a href="board-b_file_form.do" >파일 업로드</a> -->
+		파일명 : <input type="file" name="fileName"><br>
+<!-- 		파일설명 <br/><textarea name="fileComment" rows="2" cols="30"></textarea><br> -->
 		<input type="submit" value="글등록">
 	</form>
-	
+	<a href="board-b_list.do">취소</a>
 </body>
 </html>

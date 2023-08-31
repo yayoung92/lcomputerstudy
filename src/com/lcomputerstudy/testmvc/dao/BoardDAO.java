@@ -196,10 +196,11 @@ public class BoardDAO {
 		ResultSet rs = null;
 		Board board = null;
 		User user = null;
+		File file = null;
 		
 		try {
 			conn = DBConnection.getConnection();
-			String query = "select * from board join user on board.u_idx = user.u_idx where b_idx=?";
+			String query = "select * from board join user on board.u_idx = user.u_idx join files on board.b_idx = file.f_idx where b_idx=?";
 		   	pstmt = conn.prepareStatement(query);
 		   	pstmt.setInt(1, bIdx);
 		    rs = pstmt.executeQuery();
@@ -207,12 +208,14 @@ public class BoardDAO {
 		    while(rs.next()){  
 		    	board = new Board();
 		    	user = new User();
+		    	file = new File();
 		    	board.setB_idx(rs.getInt("b_idx"));
 		    	user.setU_id(rs.getString("user.u_id"));
 		    	board.setUser(user);
 		    	board.setB_title(rs.getString("b_title"));
 		    	board.setB_content(rs.getString("b_content"));
 		    	board.setB_date(rs.getString("b_date"));
+		    	file.setF_file(rs.getString("files.f_file"));
 		    }
 		    
 	    } catch(Exception e) {
@@ -394,6 +397,7 @@ public class BoardDAO {
 		Comment comment = null;
 		Board board = null;
 		User user = null;
+		File file = null;
 		List<Comment> commentList = null;
 		
 		try {
@@ -404,6 +408,7 @@ public class BoardDAO {
 				     .append("LEFT JOIN   user tb ON ta.u_idx = tb.u_idx ")
 			         .append("LEFT JOIN   `comment` tc ON ta.b_idx = tc.b_idx ")
 			         .append("LEFT JOIN   user td ON tc.u_idx = td.u_idx ")
+			         .append("LEFT JOIN	  files te ON ta.b_idx = te.f_idx")
 		  	         .append("WHERE       ta.b_idx = ?")
 		 	         .toString();
 			pstmt = conn.prepareStatement(query);
@@ -419,6 +424,7 @@ public class BoardDAO {
 
 	        		board = new Board();
 	        		user = new User();
+	        		file = new File();
 	        		tmpBIdx = rs.getInt("b_idx");
 	        		
 		        	board.setB_idx(tmpBIdx);
@@ -428,6 +434,9 @@ public class BoardDAO {
 			    		
 		        	user.setU_id(rs.getString("tb.u_id"));
 			    	board.setUser(user);
+			    	
+			    	file.setF_file(rs.getString("te.f_file"));
+			    	board.setFile(file);
 			    	
 	        	}
 	        	

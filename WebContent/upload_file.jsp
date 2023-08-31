@@ -12,7 +12,7 @@ String name="";
 String subject="";
 String filename1="";
 String filename2="";
-String conmment="";
+String comment="";
 
 try{
    MultipartRequest multi=new MultipartRequest(request,
@@ -23,6 +23,7 @@ try{
 
    name=multi.getParameter("name");
    subject=multi.getParameter("subject");
+   comment=multi.getParameter("fileDescription");
    
    
    Enumeration<?> files=multi.getFileNames();
@@ -48,6 +49,7 @@ try{
    <input type="hidden" name="subject" value="<%=subject%>">
    <input type="hidden" name="filename1" value="<%=filename1%>">
    <input type="hidden" name="filename2" value="<%=filename2%>">
+   <input type="hidden" name="comment" value="<%=comment %>">
 </form>
 <a href="#" onclick="javascript:filecheck.submit()">업로드 확인 및 다운로드 페이지 이동</a>
 </body>

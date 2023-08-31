@@ -11,7 +11,15 @@ public class Board {
 	private int u_idx;
 	private User user;
 	private Comment comment;
+	private File file;
 	
+	
+	public File getFile() {
+		return file;
+	}
+	public void setFile(File file) {
+		this.file = file;
+	}
 	public Comment getComment() {
 		return comment;
 	}

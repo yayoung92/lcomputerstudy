@@ -3,6 +3,8 @@ package com.lcomputerstudy.testmvc.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.Part;
+
 import com.lcomputerstudy.testmvc.dao.FileDAO;
 import com.lcomputerstudy.testmvc.vo.Board;
 import com.lcomputerstudy.testmvc.vo.Comment;
@@ -25,5 +27,8 @@ public class FileService {
 	}
 	public List<File> getFileList() {
 		return dao.getFileList();
+	}
+	public String getFilename(Part part) {
+		return dao.getFilename(part);
 	}
 }

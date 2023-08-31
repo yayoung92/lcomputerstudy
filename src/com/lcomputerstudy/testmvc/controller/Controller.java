@@ -1,6 +1,8 @@
 package com.lcomputerstudy.testmvc.controller;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.ArrayList;
@@ -8,11 +10,13 @@ import java.util.Enumeration;
 import java.util.UUID;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 import javax.servlet.annotation.MultipartConfig;
 
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
@@ -206,18 +210,69 @@ public class Controller extends HttpServlet {
 				session = request.getSession();
 				user = (User)session.getAttribute("user");
 				
+				FileService fileService = FileService.getInstance();
+				
+	//			String fileComment = request.getParameter("fileComment");
+				Part part = request.getPart("fileName");
+				String fileName = fileService.getFilename(part);
+				if(!fileName.isEmpty()) {
+					part.write("C:\\Users\\L10B\\Documents\\work2\\lcomputerstudy\\WebContent\\upload\\" + fileName);
+				}
+				
+				PrintWriter writer = response.getWriter();
+				
+				writer.print("파일명:<a href='upload?fileName=" + fileName + "'> " + fileName + "</a href><br>"); 
+	//		    writer.print("파일설명: "+ fileComment + "<br>");
+			    writer.print("파일크기: " + part.getSize() + " bytes" + "<br>");
+			    
+				File file = new File();
+		//		file.setF_file(part.getSubmittedFileName());
+			    
 				board = new Board();
 				board.setB_title(request.getParameter("title"));
 				board.setB_content(request.getParameter("content"));
 				board.setU_idx(user.getU_idx());
 				board.setB_date(request.getParameter("date"));
 				board.setB_view(request.getParameter("view"));
+				file.setF_file(part.getSubmittedFileName());
+				board.setFile(file);
 				
 				boardService = BoardService.getInstance();
 				boardService.insertBoard(board);
-						
+				
+				System.out.println(part.toString());
+				System.out.println(part.getSubmittedFileName());	//part.getSubmiitedFileName()과 file.getF_file(), board.getFile().getF_file() 결과 같음
+				System.out.println(file.getF_file());
+				System.out.println(board.getFile());
+				System.out.println(board.getFile().getF_file());
+				
 				view = "board/b_insert-result";
-				break;				
+				break;
+			case "/board-b_download.do":
+				fileName = request.getParameter("fileName");
+		        String filePath = "src/lcomputerstudy/WebContent/upload";
+		        
+		        String file2 = filePath  + fileName;
+		  //      String encodingFileName = new String(fileName.getBytes("UTF-8"));
+
+		        byte[] b = new byte[4096];
+		        FileInputStream fileInputStream = new FileInputStream(file2);
+
+		        String sMimeType = getServletContext().getMimeType(filePath);
+		        if(sMimeType == null) {
+		            sMimeType = "application/octet-stream";
+		        }
+		        response.setContentType(sMimeType);
+
+		        response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+
+		        ServletOutputStream stream = response.getOutputStream();
+		        int read;
+		        while ((read = fileInputStream.read(b, 0, b.length)) != -1) {
+		            stream.write(b, 0, read);
+		        }
+		//		view = "board/b_file_upload";
+				break;
 				
 ////// 상세페이지 db board 로 연결해서 한번에 가져오기.		//////
 			case "/board-b_detail2.do":
@@ -435,11 +490,11 @@ public class Controller extends HttpServlet {
 				view = "user/u_list";
 				break;
 			case "/file_list.do":
-				String fileWriter = request.getParameter("name");
-				String fileTitle = request.getParameter("subject");
+				String fileWriter1 = request.getParameter("name");
+				String fileTitle1 = request.getParameter("subject");
 				
 				List<File> fileList = new ArrayList<>();
-				FileService fileService = FileService.getInstance();
+				fileService = FileService.getInstance();
 				fileList = fileService.getFileList();
 				
 				request.setAttribute("fileList", fileList);

@@ -60,8 +60,15 @@
 				<td>날짜</td>	
 				<td>${board.b_date}</td>
 			</tr>
-				
+			<tr>
+				<td>이미지</td>
+				<td>${board.files.f_file }</td>
+				<td><img src="C:\\Users\\L10B\\Documents\\work2\\lcomputerstudy\\WebContent\\upload\\${board.getFile().getF_file()}" alt="Uploaded Image"></td>
+				<td><a href= "${board.files.f_file}">다운로드</a></td>			
+			</tr>	
+			
 		</table>
+
 	<div>
 		<a href="board-b_list.do"><input type="button" value="돌아가기"></a>
 		<a href="board-b_reply.do?b_idx=${board.b_idx}"><input type="button" value="답글"></a>

@@ -9,27 +9,12 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 </head>
 <body>
-<form action="upload_file.jsp" method="post" enctype="multipart/form-data">
-<table border=1>
-	<tr>
-		<td colspan=2 align="center"><h3>파일 업로드 폼</h3></td>
-	</tr>
-	<tr>
-		<td>올린 사람 :</td><td><input type="text" name="name"></td>
-	</tr>
-	<tr>
-		<td>제목 :</td><td><input type="text" name="subject"></td>
-	</tr>
-	<tr>
-		<td>파일명1 :</td><td><input type="file" name="fileeName1"></td>
-	</tr>
-	<tr>
-		<td>파일명2 :</td><td><input type="file" name="fileName"></td>
-	</tr>
-	<tr>
-		<td colspan=2 align="center"><input type="submit" value="전송"></td>
-	</tr>
-</table>
-</form>
+	<form action="board-b_insert-process.do" method="post" enctype="multipart/form-data">
+		<h3>파일 업로드 폼</h3>
+		작성자 : ${sessionScope.user.u_name }<br>
+		파일명 : <input type="file" name="fileName"><br>
+		파일설명 <br/><textarea name="fileComment" rows="5" cols="30"></textarea><br>
+		<input type="submit" value="파일 등록">
+	</form>
 </body>
 </html>

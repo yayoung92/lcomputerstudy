@@ -46,10 +46,6 @@ public class FileDAO {
     		while(rs.next()) {
     			 file = new File();
                  file.setF_idx(rs.getInt("f_idx"));
-                 file.setF_title(rs.getString("f_title"));
-                 file.setF_name(rs.getString("f_name"));
-                 file.setF_cate(rs.getString("f_cate"));
-                 file.setF_ofile(rs.getString("f_ofile"));
                  file.setF_file(rs.getString("f_file"));
                  file.setF_date(rs.getString("f_date"));
                  fileList.add(file);
@@ -67,7 +63,15 @@ public class FileDAO {
 		}
 		return fileList;
 	}
-	public String getFilename(File file) {
-		String content
+	public String getFilename(Part part) {
+		String contentDisp = part.getHeader("content-disposition");
+        String[] split = contentDisp.split(";");
+        for (int i = 0; i < split.length; i++) {
+            String temp = split[i];
+            if (temp.trim().startsWith("filename")) {
+                return temp.substring(temp.indexOf("=") + 2, temp.length() - 1);
+            }
+        }
+        return "";
 	}
 }
