@@ -3,9 +3,12 @@ package com.lcomputerstudy.testmvc.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.Part;
+
 import com.lcomputerstudy.testmvc.dao.BoardDAO;
 import com.lcomputerstudy.testmvc.vo.Board;
 import com.lcomputerstudy.testmvc.vo.Comment;
+import com.lcomputerstudy.testmvc.vo.File;
 import com.lcomputerstudy.testmvc.vo.Pagination;
 
 public class BoardService {
@@ -69,6 +72,18 @@ public class BoardService {
 	}
 	public void ajeditComment(Comment comment) {
 		dao.ajeditComment(comment);
+	}
+	public List<File> getFileList() {
+		return dao.getFileList();
+	}
+	public String getFilename(Part part) {
+		return dao.getFilename(part);
+	}
+	public void insertFile(File file) {
+		dao.insertFile(file);
+	}
+	public File getFile(int fIdx) {
+		return dao.getFile(fIdx);
 	}
 }
 

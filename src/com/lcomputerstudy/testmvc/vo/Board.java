@@ -9,11 +9,24 @@ public class Board {
 	private String b_view;
 	private String b_date;
 	private int u_idx;
+	private int f_idx;
+	private String f_name;
 	private User user;
 	private Comment comment;
 	private File file;
 	
-	
+	public String getF_name() {
+		return f_name;
+	}
+	public void setF_name(String f_name) {
+		this.f_name = f_name;
+	}
+	public int getF_idx() {
+		return f_idx;
+	}
+	public void setF_idx(int f_idx) {
+		this.f_idx = f_idx;
+	}
 	public File getFile() {
 		return file;
 	}

@@ -62,10 +62,9 @@
 			</tr>
 			<tr>
 				<td>이미지</td>
-				<td>${board.files.f_file }</td>
-				<td><img src="C:\\Users\\L10B\\Documents\\work2\\lcomputerstudy\\WebContent\\upload\\${board.getFile().getF_file()}" alt="Uploaded Image"></td>
-				<td><a href= "${board.files.f_file}">다운로드</a></td>			
-			</tr>	
+				<td><img src="/lcomputerstudy/upload/${board.f_name }" alt="${board.f_name }"></td>
+				<td><a href= "/lcomputerstudy/upload/${board.f_name }" download>다운로드</a></td>	
+			</tr>
 			
 		</table>
 

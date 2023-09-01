@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.Part;
+
 import com.lcomputerstudy.testmvc.datebase.DBConnection;
 import com.lcomputerstudy.testmvc.vo.Board;
 import com.lcomputerstudy.testmvc.vo.Comment;
@@ -162,14 +164,15 @@ public class BoardDAO {
 			conn = DBConnection.getConnection();
 			
 			String query = new StringBuilder()
-						.append("insert into board (b_title,b_content,b_view,u_idx,b_date,b_order, b_depth) ")
-						.append("value (?, ?, 0, ?, now(), 1, 0) ")
+						.append("insert into board (b_title,b_content,b_view,u_idx,b_date,b_order, b_depth, f_name) ")
+						.append("value (?, ?, 0, ?, now(), 1, 0, ?) ")
 						.toString();
 
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, board.getB_title());
 			pstmt.setString(2, board.getB_content());
 			pstmt.setInt(3, board.getU_idx());
+			pstmt.setString(4, board.getF_name());
 			pstmt.executeUpdate();
 			pstmt.close();
 			
@@ -200,7 +203,7 @@ public class BoardDAO {
 		
 		try {
 			conn = DBConnection.getConnection();
-			String query = "select * from board join user on board.u_idx = user.u_idx join files on board.b_idx = file.f_idx where b_idx=?";
+			String query = "select * from board join user on board.u_idx = user.u_idx join files on board.b_idx = files.b_idx where board.b_idx=?";
 		   	pstmt = conn.prepareStatement(query);
 		   	pstmt.setInt(1, bIdx);
 		    rs = pstmt.executeQuery();
@@ -216,6 +219,7 @@ public class BoardDAO {
 		    	board.setB_content(rs.getString("b_content"));
 		    	board.setB_date(rs.getString("b_date"));
 		    	file.setF_file(rs.getString("files.f_file"));
+		    	board.setFile(file);
 		    }
 		    
 	    } catch(Exception e) {
@@ -408,7 +412,7 @@ public class BoardDAO {
 				     .append("LEFT JOIN   user tb ON ta.u_idx = tb.u_idx ")
 			         .append("LEFT JOIN   `comment` tc ON ta.b_idx = tc.b_idx ")
 			         .append("LEFT JOIN   user td ON tc.u_idx = td.u_idx ")
-			         .append("LEFT JOIN	  files te ON ta.b_idx = te.f_idx")
+			 //        .append("LEFT JOIN	  files te ON ta.f_idx = te.f_idx ")
 		  	         .append("WHERE       ta.b_idx = ?")
 		 	         .toString();
 			pstmt = conn.prepareStatement(query);
@@ -431,12 +435,12 @@ public class BoardDAO {
 		        	board.setB_title(rs.getString("b_title"));
 			    	board.setB_content(rs.getString("b_content"));
 			    	board.setB_date(rs.getString("b_date"));
-			    		
+			    	board.setF_name(rs.getString("f_name"));	
 		        	user.setU_id(rs.getString("tb.u_id"));
 			    	board.setUser(user);
 			    	
-			    	file.setF_file(rs.getString("te.f_file"));
-			    	board.setFile(file);
+			 //   	file.setF_file(rs.getString("te.f_file"));
+			//    	board.setFile(file);
 			    	
 	        	}
 	        	
@@ -614,6 +618,112 @@ public class BoardDAO {
 				e.printStackTrace();
 			}
 		}
+	}
+	public List<File> getFileList() {
+		List<File> fileList = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Board board = new Board();
+    	User user = new User();
+    	File file = new File();
+    	
+    	try {
+    		conn = DBConnection.getConnection();
+    		String query = "select * from file";
+    		pstmt = conn.prepareStatement(query);
+    		rs = pstmt.executeQuery();
+    		
+    		while(rs.next()) {
+    			 file = new File();
+                 file.setF_idx(rs.getInt("f_idx"));
+                 file.setF_file(rs.getString("f_file"));
+                 file.setF_date(rs.getString("f_date"));
+                 fileList.add(file);
+    		}
+    	} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) rs.close();
+				if (pstmt != null) pstmt.close();
+				if (conn != null) conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return fileList;
+	}
+	public String getFilename(Part part) {
+		String contentDisp = part.getHeader("content-disposition");
+        String[] split = contentDisp.split(";");
+        for (int i = 0; i < split.length; i++) {
+            String temp = split[i];
+            if (temp.trim().startsWith("filename")) {
+                return temp.substring(temp.indexOf("=") + 2, temp.length() - 1);
+            }
+        }
+        return "";
+	}
+	public void insertFile(File file) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			conn = DBConnection.getConnection();
+			
+			String query = new StringBuilder()
+						.append("insert into files (f_file, f_date) ")
+						.append("value (?, now()) ")
+						.toString();
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, file.getF_file());
+			pstmt.executeUpdate();
+			pstmt.close();
+			
+			query = new StringBuilder()
+					.append("update files set b_idx = last_insert_id() where b_idx = last_insert_id()")
+					.toString();
+			pstmt = conn.prepareStatement(query);
+			pstmt.executeUpdate();
+		} catch( Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			try {
+				if (pstmt != null) pstmt.close();
+				if (conn != null) conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	public File getFile(int fIdx) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		File file = null;
+		Board board = null;
+		
+		try {
+			conn = DBConnection.getConnection();
+			String query = "select * from files left join board on board.b_idx = files.b_idx where f_idx=?";
+	 	 	pstmt = conn.prepareStatement(query);
+		 	pstmt.setInt(1, fIdx);
+		 	rs = pstmt.executeQuery();
+	
+		 	while(rs.next()){
+		 		file = new File();
+		 		board = new Board();
+		 		file.setF_idx(rs.getInt("f_idx"));
+		 		file.setF_file(rs.getString("f_file"));
+		 		
+		 		board.setB_idx(rs.getInt("board.b_idx"));
+		 		file.setBoard(board);
+		 	}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+			return file;
 	}
 }
 

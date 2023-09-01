@@ -26,10 +26,10 @@
 	 		<td>작성자 : </td>
 			<td>${sessionScope.user.u_name }</td>
 		</tr> 
+		<tr>
+			<td>첨부파일 : </td>
+			<td><input type="file" name="fileName"><br></td>
 		</table>
-<!--  	<a href="board-b_file_form.do" >파일 업로드</a> -->
-		파일명 : <input type="file" name="fileName"><br>
-<!-- 		파일설명 <br/><textarea name="fileComment" rows="2" cols="30"></textarea><br> -->
 		<input type="submit" value="글등록">
 	</form>
 	<a href="board-b_list.do">취소</a>
